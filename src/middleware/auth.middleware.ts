@@ -1,18 +1,18 @@
 import {
   Injectable,
   NestMiddleware,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import * as jwt from 'jsonwebtoken';
-
-import { UserService } from 'src/modules/user/user.service';
-import { RequestWithUser } from 'src/shared/types';
-import { BackendLogger } from 'src/modules/logger/BackendLogger';
-import { DotenvService } from 'src/modules/dotenv/dotenv.service';
+import { NextFunction, Request, Response } from 'express';
 import { SessionMiddleware } from 'src/middleware/session.middleware';
-import { SESSION_USER } from 'src/shared/constants';
+import { DotenvService } from 'src/modules/dotenv/dotenv.service';
+import { BackendLogger } from 'src/modules/logger/BackendLogger';
 import { Users } from 'src/modules/user/user.entity';
+import { UserService } from 'src/modules/user/user.service';
+import { SESSION_USER } from 'src/shared/constants';
+import { RequestWithUser } from 'src/shared/types';
+import { Utils } from 'src/shared/util';
+const { verifyAsync } = Utils;
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -25,12 +25,12 @@ export class AuthMiddleware implements NestMiddleware {
 
   public async use(req: RequestWithUser, res: Response, next: NextFunction) {
     // Check API key first
-    const apiKey = req.query.key || req.body.key;
+    const api_key = req.query.key || req.body.key;
     let user: Users;
 
     // Check API key first
-    if (apiKey) {
-      user = await this.userService.findOne({ apiKey }, ['access']);
+    if (api_key) {
+      user = await this.userService.findOne({ api_key }, ['access']);
       if (!user) {
         this.logger.warn(`Unauthorized exception for url: ${req.originalUrl}`);
         throw new UnauthorizedException();
@@ -48,10 +48,8 @@ export class AuthMiddleware implements NestMiddleware {
     }
 
     try {
-      const payload: any = jwt.verify(token, this.dotenvService.get('APP_KEY'));
-      user = await this.userService.findOne({ email: payload.email }, [
-        'access',
-      ]);
+      const payload: any = await verifyAsync(token, this.dotenvService.get('APP_KEY'));
+      user = await this.userService.findOne({ email: payload.email }, ['user_access']);
     } catch (err) {
       // This should be a debug message, since regularly JWTs will expire
       // during normal use of the portal so we don't want to raise alarms

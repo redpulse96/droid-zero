@@ -1,0 +1,44 @@
+{
+    "editor.rulers": [80],
+    "editor.tabCompletion": "on",
+    "editor.tabSize": 2,
+    "editor.trimAutoWhitespace": true,
+    "editor.formatOnSave": true,
+    "editor.autoIndent": "brackets",
+    "editor.colorDecorators": true,
+    "editor.comments.insertSpace": true,
+    "editor.copyWithSyntaxHighlighting": true,
+    "editor.largeFileOptimizations": true,
+    "editor.formatOnPaste": true,
+    "editor.codeLens": true,
+
+    "javascript.format.enable": true,
+    "typescript.format.enable": true,
+
+    "explorer.sortOrder": "default",
+    "workbench.editor.highlightModifiedTabs": true,
+    "files.exclude": {
+        "**/.DS_Store": true,
+        "**/.git": true,
+        "**/.hg": true,
+        "**/.svn": true,
+        "**/CVS": true,
+        "dist": true,
+    },
+    "files.trimFinalNewlines": true,
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "files.autoSave": "afterDelay",
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "eslint.run": "onSave",
+    "eslint.nodePath": "./node_modules",
+    "eslint.validate": [
+        "javascript",
+        "typescript"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true,
+        "source.organizeImports": true,
+        "source.fixAll": true
+    }
+}

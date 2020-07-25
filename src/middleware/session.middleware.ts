@@ -1,9 +1,8 @@
-import * as cls from 'cls-hooked';
-import uniqid from 'uniqid';
 import { Injectable, NestMiddleware } from '@nestjs/common';
-
-import { NEST_NAMESPACE, REQUEST_ID } from '../shared/constants';
+import * as cls from 'cls-hooked';
 import { NextFunction } from 'express';
+import uniqid from 'uniqid';
+import { NEST_NAMESPACE, REQUEST_ID } from '../shared/constants';
 
 @Injectable()
 export class SessionMiddleware implements NestMiddleware {

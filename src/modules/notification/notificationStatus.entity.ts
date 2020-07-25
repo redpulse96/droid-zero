@@ -1,14 +1,10 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  JoinColumn,
-  UpdateDateColumn,
-  CreateDateColumn,
-} from 'typeorm';
-import { Users } from 'src/modules/user/user.entity';
 import { Notification } from 'src/modules/notification/notification.entity';
+import {
+  Column,
+  CreateDateColumn, Entity,
+  ManyToOne, PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
 
 @Entity()
 export class NotificationStatus {
@@ -32,12 +28,6 @@ export class NotificationStatus {
 
   @Column()
   public uuid: string;
-
-  @ManyToOne(
-    type => Users,
-    user => user.notifications,
-  )
-  public user: Users;
 
   @ManyToOne(
     type => Notification,

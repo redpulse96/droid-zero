@@ -1,21 +1,19 @@
-import { Module, MiddlewareConsumer, forwardRef } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { GraphQLModule } from '@nestjs/graphql';
+import { forwardRef, MiddlewareConsumer, Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConsoleModule } from 'nestjs-console';
-
-import { DotenvModule } from './modules/dotenv/dotenv.module';
-import { DotenvService } from './modules/dotenv/dotenv.service';
-import { UserModule } from './modules/user/user.module';
+import { join } from 'path';
+import { AuthMiddleware } from './middleware/auth.middleware';
 import { SessionMiddleware } from './middleware/session.middleware';
 import { AuthModule } from './modules/auth/auth.module';
-import { EmailModule } from './modules/email/email.module';
-import { AuthMiddleware } from './middleware/auth.middleware';
-import { UtilModule } from './modules/util/util.module';
-import { NotificationModule } from './modules/notification/notification.module';
 import { DatabaseModule } from './modules/database/database.module';
+import { DotenvModule } from './modules/dotenv/dotenv.module';
+import { DotenvService } from './modules/dotenv/dotenv.service';
+import { EmailModule } from './modules/email/email.module';
+import { NotificationModule } from './modules/notification/notification.module';
 import { SchedulerModule } from './modules/scheduler/scheduler.module';
-import { join } from 'path';
+import { UserModule } from './modules/user/user.module';
+import { UtilModule } from './modules/util/util.module';
 
 @Module({
   imports: [
@@ -33,22 +31,22 @@ import { join } from 'path';
           password: dotenvService.get('DB_PASSWORD'),
           database: dotenvService.get('DB_NAME'),
           entities: [join(__dirname, '/**/*.entity.{d.js,d.ts,js,ts}')],
-          synchronize: false,// dotenvService.get('NODE_ENV') === 'development',
+          synchronize: false, // dotenvService.get('NODE_ENV') === 'development',
           logging: dotenvService.get('NODE_ENV') === 'development',
           logger: 'file',
         } as any),
       inject: [DotenvService],
     }),
-    GraphQLModule.forRootAsync({
-      useFactory: async (dotenvService: DotenvService) => ({
-        debug: dotenvService.get('NODE_ENV') === 'development',
-        playground: dotenvService.get('NODE_ENV') === 'development',
-        autoSchemaFile: true,
-        sortSchema: true,
-        context: ({ req }) => ({ req }),
-      }),
-      inject: [DotenvService],
-    }),
+    // GraphQLModule.forRootAsync({
+    //   useFactory: async (dotenvService: DotenvService) => ({
+    //     debug: dotenvService.get('NODE_ENV') === 'development',
+    //     playground: dotenvService.get('NODE_ENV') === 'development',
+    //     autoSchemaFile: true,
+    //     sortSchema: true,
+    //     context: ({ req }) => ({ req }),
+    //   }),
+    //   inject: [DotenvService],
+    // }),
     DotenvModule,
     AuthModule,
     EmailModule,

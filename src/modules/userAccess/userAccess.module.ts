@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserAccessController } from './userAccess.controller';
 import { UserAccess } from './userAccess.entity';
 import { UserAccessService } from './userAccess.service';
-import { UserAccessController } from './userAccess.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserAccess])],
@@ -10,4 +10,4 @@ import { UserAccessController } from './userAccess.controller';
   providers: [UserAccessService],
   exports: [UserAccessService],
 })
-export class UserAccessModule {}
+export class UserAccessModule { }

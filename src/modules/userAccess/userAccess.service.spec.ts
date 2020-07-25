@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
-import { UserAccessService } from './userAccess.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserAccess } from './userAccess.entity';
+import { UserAccessService } from './userAccess.service';
 
 describe('UserAccessService', () => {
   let userAccessService: UserAccessService;

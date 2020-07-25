@@ -1,11 +1,9 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import * as cp from 'child_process';
-import * as util from 'util';
-
-import { BackendLogger } from '../logger/BackendLogger';
 import { UserService } from 'src/modules/user/user.service';
+import * as util from 'util';
 import { DotenvService } from '../dotenv/dotenv.service';
-import { Users } from 'src/modules/user/user.entity';
+import { BackendLogger } from '../logger/BackendLogger';
 
 @Injectable()
 export class UtilService {
@@ -36,39 +34,5 @@ export class UtilService {
     const exec = util.promisify(cp.exec);
 
     return exec(cmd, options);
-  }
-
-  public async getUserWhereClause(user: Users) {
-    // Check if the user is part of a group. If they are, get the groups applications,
-    // not just the user's own apps
-    const userIds = await this.getUserIds(user);
-
-    const userWhereClause = name => [
-      `${name}.userId IN (:...userIds)`,
-      { userIds },
-    ];
-
-    return userWhereClause;
-  }
-
-  public async getUserIds(user: Users) {
-    let userIds: string[];
-
-    if (user.group) {
-      // If the user is part of a sub group, find IDs that match both their group
-      // *and* their subgroup
-      if (user.subGroups.length > 0) {
-        userIds = await this.userService.findSubGroupIds(
-          user.group,
-          user.subGroups,
-        );
-      } else {
-        userIds = await this.userService.findGroupIds(user.group);
-      }
-    } else {
-      userIds = [user.id];
-    }
-
-    return userIds;
   }
 }

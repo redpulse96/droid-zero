@@ -1,11 +1,11 @@
-import moment from 'moment';
-import * as winston from 'winston';
-import chalk from 'chalk';
 import { Logger } from '@nestjs/common';
-
-import { REQUEST_ID, SESSION_USER, MomentFormat } from '../../shared/constants';
+import chalk from 'chalk';
+import moment from 'moment';
 import { SessionMiddleware } from 'src/middleware/session.middleware';
+import * as winston from 'winston';
+import { MomentFormat, REQUEST_ID, SESSION_USER } from '../../shared/constants';
 import { Users } from '../user/user.entity';
+
 
 const { Timestamp } = MomentFormat;
 
@@ -73,27 +73,27 @@ export class BackendLogger extends Logger {
     this.ctx = context;
   }
 
-  public info(message: string) {
+  public info(message: any) {
     this.winstonLog(message, 'info');
     super.log(message);
   }
 
-  public debug(message: string) {
+  public debug(message: any) {
     this.winstonLog(message, 'debug');
     super.log(message);
   }
 
-  public log(message: string) {
+  public log(message: any) {
     this.winstonLog(message, 'verbose');
     super.log(message);
   }
 
-  public warn(message: string) {
+  public warn(message: any) {
     this.winstonLog(message, 'warn');
     super.warn(message);
   }
 
-  public error(message: string, trace: string = '') {
+  public error(message: any, trace: string = '') {
     if (trace) {
       this.winstonLog(message, 'error', trace);
       super.error(message, trace);

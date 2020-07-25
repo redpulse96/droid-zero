@@ -1,7 +1,5 @@
-import { Module, Global, forwardRef } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Global, Module } from '@nestjs/common';
 import { UtilService } from './util.service';
-import { UserModule } from '../user/user.module';
 
 @Global()
 @Module({
@@ -10,4 +8,4 @@ import { UserModule } from '../user/user.module';
   providers: [UtilService],
   exports: [UtilService],
 })
-export class UtilModule {}
+export class UtilModule { }

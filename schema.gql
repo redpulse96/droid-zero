@@ -144,18 +144,6 @@ type GroupUserAccess {
   locked: Boolean!
 }
 
-type Mutation {
-  adminUpdateUser(userInput: UserInputDto!): User!
-  adminDeleteAppSubmission(appSubmissionId: String!): Boolean!
-  adminUpdateAppSubmission(
-    id: String!
-    status: Float!
-    priority: Float!
-  ): AppSubmission!
-  adminCheckOnAppSubmission(appSubmissionId: String!): AppSubmission!
-  adminDeleteAppSubscription(appSubscriptionId: String!): Boolean!
-}
-
 type PlayStoreInfo {
   id: String!
   name: String!
@@ -275,11 +263,4 @@ type UserConfig {
   riskScoreThreshold: Float
   riskScoreThresholdAlertEmail: String
   tourTaken: Boolean!
-}
-
-input UserInputDto {
-  id: String!
-  group: String!
-  subGroups: [String!]!
-  locked: Boolean!
 }

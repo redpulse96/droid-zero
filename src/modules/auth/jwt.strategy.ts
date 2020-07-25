@@ -1,16 +1,15 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-
-import { BackendLogger } from '../logger/BackendLogger';
-import { SESSION_USER } from '../../shared/constants';
 import { SessionMiddleware } from '../../middleware/session.middleware';
-import { UserService } from '../user/user.service';
+import { SESSION_USER } from '../../shared/constants';
 import { DotenvService } from '../dotenv/dotenv.service';
+import { BackendLogger } from '../logger/BackendLogger';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  private readonly logger = new BackendLogger(JwtStrategy.name);
+  private readonly log = new BackendLogger(JwtStrategy.name);
 
   constructor (
     private readonly userService: UserService,
@@ -26,7 +25,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.userService.findOne({ email: payload.email });
 
     if (!user) {
-      this.logger.debug(`Invalid/expired payload: ${JSON.stringify(payload)}`);
+      this.log.debug('Invalid/expired payload:');
+      this.log.debug(JSON.stringify(payload));
       throw new UnauthorizedException();
     }
     SessionMiddleware.set(SESSION_USER, user);

@@ -1,6 +1,6 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { RequestWithUser } from 'src/shared/types';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { RequestWithUser } from 'src/shared/types';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
@@ -14,6 +14,6 @@ export class AdminGuard implements CanActivate {
 
     const { user } = request;
 
-    return user.isAdmin;
+    return user.is_admin;
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { Repository, Brackets } from 'typeorm';
+import { Brackets, In, Repository } from 'typeorm';
 
 @Injectable()
 export class BaseService<T> {
@@ -39,6 +39,18 @@ export class BaseService<T> {
     // We preform this extra DB operation since this will load
     // any needed relations for the entity.
     return this.repo.findOne({ where: { id: savedEntity.id }, relations });
+  }
+
+  public async createAll(
+    values: Partial<T[]>,
+    relations: string[] = [],
+  ): Promise<T[]> {
+    const newEntity = this.repo.create(values as any);
+    const savedEntity = await this.repo.save(newEntity as any);
+    ;
+    // We preform this extra DB operation since this will load
+    // any needed relations for the entity.
+    return this.repo.find({ where: { id: In(savedEntity.filter((v: any) => v.id)) }, relations });
   }
 
   public async findOrCreate(

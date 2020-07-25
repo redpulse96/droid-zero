@@ -1,15 +1,8 @@
-import {
-  Controller,
-  Post,
-  Body,
-  ValidationPipe,
-  UseGuards,
-  Get,
-} from '@nestjs/common';
-
+import { Controller, UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { BackendLogger } from '../logger/BackendLogger';
 import { UserAccessService } from './userAccess.service';
-import { AuthGuard } from 'src/shared/guards/auth.guard';
+
 
 @Controller('userAccess')
 @UseGuards(AuthGuard)

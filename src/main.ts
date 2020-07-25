@@ -1,14 +1,13 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import * as bodyParser from 'body-parser';
+import helmet from 'helmet';
 import { BootstrapConsole } from 'nestjs-console';
 import * as owasp from 'owasp-password-strength-test';
-import helmet from 'helmet';
-import * as bodyParser from 'body-parser';
-
 import { AppModule } from './app.module';
-import { BackendLogger } from './modules/logger/BackendLogger';
-import { DotenvService } from './modules/dotenv/dotenv.service';
-import { ValidationPipe } from '@nestjs/common';
 import { ConsoleAppModule } from './consoleApp.module';
+import { DotenvService } from './modules/dotenv/dotenv.service';
+import { BackendLogger } from './modules/logger/BackendLogger';
 
 const logger = new BackendLogger('Main');
 
@@ -16,7 +15,7 @@ const logger = new BackendLogger('Main');
 owasp.config({
   allowPassphrases: true,
   maxLength: 128,
-  minLength: 10,
+  minLength: 6,
   minPhraseLength: 20,
   minOptionalTestsToPass: 3,
 });

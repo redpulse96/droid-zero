@@ -1,8 +1,8 @@
-import { Console, Command } from 'nestjs-console';
-import { UserService } from './user.service';
-import chalk from 'chalk';
 import * as bcrypt from 'bcryptjs';
+import chalk from 'chalk';
+import { Command, Console } from 'nestjs-console';
 import prompts, { PromptObject } from 'prompts';
+import { UserService } from './user.service';
 
 @Console()
 export class UserCommand {
@@ -13,8 +13,8 @@ export class UserCommand {
     description: 'Create a new user. Password will be generated and displayed',
   })
   public async createUser(email: string) {
-    const { generatedPassword } = await this.userService.createUser(email);
-    console.log('Generated password:', chalk.red(generatedPassword));
+    // const { generatedPassword } = await this.userService.createUser(email);
+    // console.log('Generated password:', chalk.red(generatedPassword));
     process.exit(0);
   }
 

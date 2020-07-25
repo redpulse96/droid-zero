@@ -22,3 +22,9 @@ export namespace MomentFormat {
   export const Time: string = 'HH:mm:ssZ';
   export const Timestamp: string = 'YYYY-MM-DD HH:mm:ssZ';
 }
+
+export namespace Status {
+  export const Active: string = 'active';
+  export const Inactive: string = 'inactive';
+  export const Pending: string = 'pending';
+}

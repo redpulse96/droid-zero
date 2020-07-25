@@ -1,12 +1,17 @@
+import { Field, ObjectType } from 'type-graphql';
 import {
-  Entity,
   Column,
+  CreateDateColumn, Entity,
+  JoinColumn, OneToOne,
   PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { Users } from '../user/user.entity';
-import { ObjectType, Field } from 'type-graphql';
+enum Status {
+  Active = 'active',
+  Inactive = 'inactive',
+  Pending = 'pending'
+}
 
 @Entity()
 @ObjectType()
@@ -15,20 +20,31 @@ export class UserAccess {
   public id: string;
 
   @Column()
-  public userId: string;
+  public user_id: string;
 
-  @Column({ default: false })
+  @Column({ default: null })
   @Field()
-  public groupAdmin: boolean;
-
-  @Column({ default: 20 })
-  @Field()
-  public maxGroupUsers: number;
+  public access_right: string;
 
   @OneToOne(
     type => Users,
-    user => user.access,
+    user => user.user_access,
   )
   @JoinColumn()
   public user: Users;
+
+  @Column({
+    type: "enum",
+    enum: Status,
+    default: Status.Active
+  })
+  public status?: string;
+
+  @CreateDateColumn()
+  @Field()
+  public created_at?: Date;
+
+  @UpdateDateColumn()
+  @Field()
+  public updated_at?: Date;
 }
