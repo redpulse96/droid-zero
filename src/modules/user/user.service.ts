@@ -1,5 +1,6 @@
 import {
-  BadRequestException, Injectable,
+  BadRequestException,
+  Injectable,
   UnauthorizedException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -37,21 +38,25 @@ export class UserService extends BaseService<Users> {
 
   public async createUser(data: RegisterUserDto) {
     try {
-
-      if (!data.is_portal_user || !data.mobile_number || !data.name || !data.primary_address) {
+      if (
+        !data.is_portal_user ||
+        !data.mobile_number ||
+        !data.name ||
+        !data.primary_address
+      ) {
         return {
           success: false,
           status_code: 400,
           response_code: 400,
           message: 'Invalid request',
-          data: {}
+          data: {},
         };
       }
       const filter: any = {
         mobile_number: data.mobile_number,
-        status: In([Status.Active, Status.Pending])
+        status: In([Status.Active, Status.Pending]),
       };
-      const uniqueMobileNumber = this.findOne(filter);
+      const uniqueMobileNumber = await this.findOne(filter);
       if (uniqueMobileNumber) {
         this.log.info('---uniqueMobileNumber---');
         this.log.info(uniqueMobileNumber);
@@ -59,26 +64,35 @@ export class UserService extends BaseService<Users> {
           success: false,
           status_code: 400,
           response_code: 400,
-          message: 'The mobile number is already in use,\nKindly use a different number',
-          data: {}
+          message:
+            'The mobile number is already in use,\nKindly use a different number',
+          data: {},
         };
       }
 
-      const otp: string = authenticator.generate(this.dotenvService.get('OTP_SECRET'));
+      const otp: string = authenticator.generate(
+        this.dotenvService.get('OTP_SECRET'),
+      );
       const createUser: any = {
         name: data.name,
         email: data.email,
         mobile_number: data.mobile_number,
-        password: data?.password ? await hashPassword(data.password) : await hashPassword(otp),
+        password: data?.password
+          ? await hashPassword(data.password)
+          : await hashPassword(otp),
         api_key: randToken.generate(32),
         primary_address: data.primary_address,
         is_admin: data.is_admin,
         is_portal_user: data.is_portal_user,
         is_locked: false,
-        secondary_address: data.secondary_address ? data.secondary_address : undefined,
-        status: Status.Pending
+        secondary_address: data.secondary_address
+          ? data.secondary_address
+          : undefined,
+        status: Status.Pending,
       };
-      const [createUserError, userDetails]: any[] = await executePromise(this.create(createUser));
+      const [createUserError, userDetails]: any[] = await executePromise(
+        this.create(createUser),
+      );
       if (createUserError) {
         this.log.info('---registerUser.createUserError---');
         this.log.info(createUserError);
@@ -87,7 +101,7 @@ export class UserService extends BaseService<Users> {
           status_code: 500,
           response_code: 500,
           message: 'User creation failed',
-          data: {}
+          data: {},
         };
       }
       this.log.info('---registerUser.userDetails---');
@@ -98,11 +112,13 @@ export class UserService extends BaseService<Users> {
         data.userAccess.forEach((val: string) => {
           const obj: any = {
             id: userDetails.id,
-            access_right: val
+            access_right: val,
           };
           userAccessArr.push(obj);
         });
-        const [userAccessError, userAccess]: any[] = await executePromise(this.userAccessService.createAll(userAccessArr));
+        const [userAccessError, userAccess]: any[] = await executePromise(
+          this.userAccessService.createAll(userAccessArr),
+        );
         if (userAccessError) {
           this.log.error('---userAccessError---');
           this.log.error(userAccessError);
@@ -117,9 +133,8 @@ export class UserService extends BaseService<Users> {
         status_code: 200,
         response_code: 200,
         message: 'User creation successful',
-        data: userDetails
+        data: userDetails,
       };
-
     } catch (error) {
       this.log.error('catch.return');
       this.log.error(error);
@@ -128,7 +143,7 @@ export class UserService extends BaseService<Users> {
         status_code: 500,
         response_code: 500,
         message: 'Internal server error',
-        data: {}
+        data: {},
       };
     }
   }
@@ -146,8 +161,10 @@ export class UserService extends BaseService<Users> {
           success: false,
           status_code: 400,
           response_code: 400,
-          message: new UnauthorizedException('This account is locked, please contact the system administrator for assistance'),
-          data: {}
+          message: new UnauthorizedException(
+            'This account is locked, please contact the system administrator for assistance',
+          ),
+          data: {},
         };
       }
 
@@ -157,12 +174,14 @@ export class UserService extends BaseService<Users> {
         const jwtToken = await signAsync(
           { email: user.email },
           this.dotenvService.get('APP_KEY'),
-          { expiresIn: '12h' }
+          { expiresIn: '12h' },
         );
 
         const filter = { id: user.id };
         const updateObj = { login_attempts: user.login_attempts + 1 };
-        const [updateUserError, updateUser]: any[] = await executePromise(this.update(filter, updateObj));
+        const [updateUserError, updateUser]: any[] = await executePromise(
+          this.update(filter, updateObj),
+        );
         if (updateUserError) {
           this.log.error('---updateUserError---');
           this.log.error(updateUserError);
@@ -172,9 +191,11 @@ export class UserService extends BaseService<Users> {
 
         const userServiceFilter = {
           user_id: user.id,
-          status: Status.Active
+          status: Status.Active,
         };
-        const [userAccessError, userAccess]: any[] = await executePromise(this.userAccessService.findAll(userServiceFilter));
+        const [userAccessError, userAccess]: any[] = await executePromise(
+          this.userAccessService.findAll(userServiceFilter),
+        );
         if (userAccessError) {
           this.log.error('---userAccessError---');
           this.log.error(userAccessError);
@@ -183,7 +204,7 @@ export class UserService extends BaseService<Users> {
             status_code: 500,
             response_code: 500,
             message: 'Internal server error',
-            data: {}
+            data: {},
           };
         }
         this.log.info('---userAccess---');
@@ -198,39 +219,38 @@ export class UserService extends BaseService<Users> {
             token: jwtToken,
             parentUser: user.parent_user,
             IsAdmin: user.is_admin ? user.is_admin : false,
-            IsPortalUser: user.is_portal_user ? user.is_portal_user : false
-          }
+            IsPortalUser: user.is_portal_user ? user.is_portal_user : false,
+          },
         };
-
       } else {
         // Invalid password given, add the bad login attempt to the database
         await this.update(
           { id: user.id },
-          { login_attempts: user.login_attempts + 1 }
+          { login_attempts: user.login_attempts + 1 },
         );
         this.log.warn('Invalid password attempt');
 
         if (user.login_attempts >= 5) {
-          await this.update(
-            { id: user.id },
-            { is_locked: true }
-          );
+          await this.update({ id: user.id }, { is_locked: true });
           this.log.error('Account now locked from too many login attempts');
 
           return {
             success: false,
             status_code: 400,
             response_code: 400,
-            message: 'Account is locked due to too many login attempts, please contact system administrator for assistance.',
-            data: {}
+            message:
+              'Account is locked due to too many login attempts, please contact system administrator for assistance.',
+            data: {},
           };
         } else {
           return {
             success: false,
             status_code: 400,
             response_code: 400,
-            message: new UnauthorizedException('Invalid email and/or password. Upon 5 incorrect logins the account will be locked'),
-            data: {}
+            message: new UnauthorizedException(
+              'Invalid email and/or password. Upon 5 incorrect logins the account will be locked',
+            ),
+            data: {},
           };
         }
       }
@@ -241,13 +261,19 @@ export class UserService extends BaseService<Users> {
         success: false,
         status_code: 400,
         response_code: 400,
-        message: new UnauthorizedException('Invalid email and/or password. Upon 5 incorrect logins the account will be locked'),
-        data: {}
+        message: new UnauthorizedException(
+          'Invalid email and/or password. Upon 5 incorrect logins the account will be locked',
+        ),
+        data: {},
       };
     }
   }
 
-  public async changePassword(email: string, currentPass: string, newPass: string) {
+  public async changePassword(
+    email: string,
+    currentPass: string,
+    newPass: string,
+  ) {
     const user = await this.findOneWithPassword(email);
 
     if (await bcrypt.compareSync(currentPass, user.password)) {
@@ -261,8 +287,10 @@ export class UserService extends BaseService<Users> {
           success: false,
           status_code: 400,
           response_code: 400,
-          message: new BadRequestException(`Invalid new password: ${passTestResult.errors}`),
-          data: {}
+          message: new BadRequestException(
+            `Invalid new password: ${passTestResult.errors}`,
+          ),
+          data: {},
         };
       }
 
@@ -270,7 +298,7 @@ export class UserService extends BaseService<Users> {
       // minimum requirements, update their user record with the new password
       await this.update(
         { id: user.id },
-        { password: await bcrypt.hashSync(newPass, 10) }
+        { password: await bcrypt.hashSync(newPass, 10) },
       );
 
       return {
@@ -278,7 +306,7 @@ export class UserService extends BaseService<Users> {
         status_code: 200,
         response_code: 200,
         message: 'Password successfully changed',
-        data: {}
+        data: {},
       };
     } else {
       this.log.warn('Incorrect password given during password change');
@@ -287,7 +315,7 @@ export class UserService extends BaseService<Users> {
         status_code: 400,
         response_code: 400,
         message: new BadRequestException('Incorrect password'),
-        data: {}
+        data: {},
       };
     }
   }
@@ -296,7 +324,9 @@ export class UserService extends BaseService<Users> {
     const user = await this.findOne({ email: emailAddress });
 
     if (!user) {
-      this.log.warn(`Forgotten password request - Could not find user: ${emailAddress}`);
+      this.log.warn(
+        `Forgotten password request - Could not find user: ${emailAddress}`,
+      );
       // We want to return status of 200 to not let the client know if
       // the email exists or not
       return;
@@ -330,7 +360,11 @@ export class UserService extends BaseService<Users> {
   }
 
   // Handles a forgotten password reset request
-  public async resetPassword(token: string, NewPassword: string, NewPasswordDuplicate: string) {
+  public async resetPassword(
+    token: string,
+    NewPassword: string,
+    NewPasswordDuplicate: string,
+  ) {
     this.log.info('Resetting password for user');
     // Find the user with the associated token
     const user = await this.findOne({ password_reset_token: token });
@@ -362,7 +396,9 @@ export class UserService extends BaseService<Users> {
     // Check new password strength
     const passTestResult = owasp.test(NewPassword);
     if (!passTestResult.strong) {
-      this.log.error(`Invalid new password entered: ${user.email}, errors: ${passTestResult.errors}`);
+      this.log.error(
+        `Invalid new password entered: ${user.email}, errors: ${passTestResult.errors}`,
+      );
       throw new BadRequestException(
         `Invalid new password. Errors: ${passTestResult.errors}`,
       );
@@ -403,11 +439,7 @@ export class UserService extends BaseService<Users> {
   public async findGroupUsers(group: string) {
     return this.userRepo
       .createQueryBuilder('users')
-      .select([
-        'users.id',
-        'users.email',
-        'users.locked',
-      ])
+      .select(['users.id', 'users.email', 'users.locked'])
       .leftJoin('users.access', 'access')
       .where('users.group = :group', { group })
       .getMany();
@@ -427,12 +459,7 @@ export class UserService extends BaseService<Users> {
     return this.userRepo
       .createQueryBuilder('user')
       .where('user.email = :email', { email })
-      .select([
-        'user.id',
-        'user.email',
-        'user.is_admin',
-        'user.is_portal_user'
-      ])
+      .select(['user.id', 'user.email', 'user.is_admin', 'user.is_portal_user'])
       .leftJoinAndSelect('user.parent_user', 'parent_user')
       .leftJoinAndSelect('user.child_users', 'child_users')
       .addSelect('user.password')

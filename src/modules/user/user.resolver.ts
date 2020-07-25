@@ -6,9 +6,7 @@ import { UserService } from './user.service';
 
 @UseGuards(AuthGuard)
 export class UserResolver {
-  constructor (
-    private readonly userService: UserService,
-  ) { }
+  constructor(private readonly userService: UserService) {}
 
   @UseGuards(AdminGuard)
   public async adminUsers() {

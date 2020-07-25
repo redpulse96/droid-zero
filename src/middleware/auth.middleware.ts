@@ -1,7 +1,7 @@
 import {
   Injectable,
   NestMiddleware,
-  UnauthorizedException
+  UnauthorizedException,
 } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { SessionMiddleware } from 'src/middleware/session.middleware';
@@ -18,10 +18,10 @@ const { verifyAsync } = Utils;
 export class AuthMiddleware implements NestMiddleware {
   private readonly logger = new BackendLogger(AuthMiddleware.name);
 
-  constructor (
+  constructor(
     private readonly userService: UserService,
     private readonly dotenvService: DotenvService,
-  ) { }
+  ) {}
 
   public async use(req: RequestWithUser, res: Response, next: NextFunction) {
     // Check API key first
@@ -48,8 +48,13 @@ export class AuthMiddleware implements NestMiddleware {
     }
 
     try {
-      const payload: any = await verifyAsync(token, this.dotenvService.get('APP_KEY'));
-      user = await this.userService.findOne({ email: payload.email }, ['user_access']);
+      const payload: any = await verifyAsync(
+        token,
+        this.dotenvService.get('APP_KEY'),
+      );
+      user = await this.userService.findOne({ email: payload.email }, [
+        'user_access',
+      ]);
     } catch (err) {
       // This should be a debug message, since regularly JWTs will expire
       // during normal use of the portal so we don't want to raise alarms

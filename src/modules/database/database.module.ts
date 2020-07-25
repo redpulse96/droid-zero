@@ -7,4 +7,4 @@ import { DatabaseCommand } from './database.command';
   providers: [DatabaseCommand],
   exports: [],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}

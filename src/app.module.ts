@@ -59,7 +59,6 @@ import { UtilModule } from './modules/util/util.module';
   ],
   providers: [],
 })
-
 export class AppModule {
   public configure(consumer: MiddlewareConsumer) {
     consumer.apply(SessionMiddleware).forRoutes('*');

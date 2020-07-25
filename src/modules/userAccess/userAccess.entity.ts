@@ -1,16 +1,18 @@
 import { Field, ObjectType } from 'type-graphql';
 import {
   Column,
-  CreateDateColumn, Entity,
-  JoinColumn, OneToOne,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { Users } from '../user/user.entity';
 enum Status {
   Active = 'active',
   Inactive = 'inactive',
-  Pending = 'pending'
+  Pending = 'pending',
 }
 
 @Entity()
@@ -34,9 +36,9 @@ export class UserAccess {
   public user: Users;
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: Status,
-    default: Status.Active
+    default: Status.Active,
   })
   public status?: string;
 

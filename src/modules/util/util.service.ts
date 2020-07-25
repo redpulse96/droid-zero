@@ -9,11 +9,11 @@ import { BackendLogger } from '../logger/BackendLogger';
 export class UtilService {
   private readonly logger = new BackendLogger(UtilService.name);
 
-  constructor (
+  constructor(
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     private readonly dotenvService: DotenvService,
-  ) { }
+  ) {}
 
   /**
    * Pauses execution for a given amount of ms

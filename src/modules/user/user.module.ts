@@ -11,12 +11,9 @@ import { UserResolver } from './user.resolver';
 
 @Global()
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Users, UserAccess]),
-    UserAccessModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Users, UserAccess]), UserAccessModule],
   providers: [UserService, UserCommand, UserResolver],
   controllers: [UserController],
   exports: [UserService],
 })
-export class UserModule { }
+export class UserModule {}

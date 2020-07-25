@@ -6,7 +6,7 @@ import { Injectable } from '@nestjs/common';
 export class DotenvService {
   private readonly envConfig: Record<string, string>;
 
-  constructor (filePath: string) {
+  constructor(filePath: string) {
     this.envConfig = dotenv.parse(fs.readFileSync(filePath));
   }
 

@@ -60,7 +60,7 @@ export class EmailService implements OnModuleInit {
     },
   };
 
-  constructor (private readonly dotenvService: DotenvService) { }
+  constructor(private readonly dotenvService: DotenvService) {}
 
   public async sendEmail({
     subject,
@@ -80,7 +80,10 @@ export class EmailService implements OnModuleInit {
     const emails = await this.getInternalEmailAlertAddresses();
     const text = this.emailTemplates[templateName](...templateParams);
 
-    let html = fs.readFileSync(join(__dirname, './emailAssets/email-template.html'), 'utf-8');
+    let html = fs.readFileSync(
+      join(__dirname, './emailAssets/email-template.html'),
+      'utf-8',
+    );
     html = html.replace('{{title}}', title);
     html = html.replace('{{text}}', text);
 

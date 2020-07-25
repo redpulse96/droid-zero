@@ -8,4 +8,4 @@ import { UtilService } from './util.service';
   providers: [UtilService],
   exports: [UtilService],
 })
-export class UtilModule { }
+export class UtilModule {}

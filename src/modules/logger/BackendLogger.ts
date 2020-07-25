@@ -6,7 +6,6 @@ import * as winston from 'winston';
 import { MomentFormat, REQUEST_ID, SESSION_USER } from '../../shared/constants';
 import { Users } from '../user/user.entity';
 
-
 const { Timestamp } = MomentFormat;
 
 const customFormat = winston.format.combine(
@@ -21,10 +20,9 @@ const formatter = info => {
   const user: Users = SessionMiddleware.get(SESSION_USER);
   const email = user ? user.email : '-';
 
-  return `${moment(info.timestamp).format(Timestamp
-  )} ${chalk.magentaBright(requestId)} ${email} [${info.level}] [${chalk.green(
-    info.context,
-  )}] ${info.message}`;
+  return `${moment(info.timestamp).format(Timestamp)} ${chalk.magentaBright(
+    requestId,
+  )} ${email} [${info.level}] [${chalk.green(info.context)}] ${info.message}`;
 };
 
 export class BackendLogger extends Logger {
@@ -67,7 +65,7 @@ export class BackendLogger extends Logger {
 
   private ctx: string;
 
-  constructor (context: string) {
+  constructor(context: string) {
     super(context);
 
     this.ctx = context;

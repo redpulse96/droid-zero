@@ -6,7 +6,7 @@ import { UserService } from './user.service';
 
 @Console()
 export class UserCommand {
-  constructor (private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Command({
     command: 'create-user <email>',

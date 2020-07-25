@@ -9,7 +9,7 @@ import { UserAccess } from './userAccess.entity';
 export class UserAccessService extends BaseService<UserAccess> {
   private readonly logger = new BackendLogger(UserAccessService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(UserAccess)
     private readonly userAccessRepository: Repository<UserAccess>,
   ) {

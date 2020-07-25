@@ -1,9 +1,11 @@
 import { Notification } from 'src/modules/notification/notification.entity';
 import {
   Column,
-  CreateDateColumn, Entity,
-  ManyToOne, PrimaryGeneratedColumn,
-  UpdateDateColumn
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
