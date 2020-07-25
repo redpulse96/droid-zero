@@ -3,7 +3,7 @@ uploads
 app-binaries
 results
 built-binaries
-public
+# public
 
 # compiled output
 /dist
