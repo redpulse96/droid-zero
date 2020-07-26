@@ -4,8 +4,7 @@ import {
   UnauthorizedException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcryptjs';
-import moment from 'moment';
+import moment  from 'moment';
 import { authenticator } from 'otplib';
 import * as owasp from 'owasp-password-strength-test';
 import * as randToken from 'rand-token';
@@ -14,13 +13,30 @@ import { DotenvService } from 'src/modules/dotenv/dotenv.service';
 import { EmailService } from 'src/modules/email/email.service';
 import { BackendLogger } from 'src/modules/logger/BackendLogger';
 import { UserAccessService } from 'src/modules/userAccess/userAccess.service';
-import { Status } from 'src/shared/constants';
+import {
+  InterfaceList,
+  MomentFormat,
+  ResponseCodes,
+  Status
+} from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { In, Repository } from 'typeorm';
 import { RegisterUserDto } from './dtos/userInput.dto';
 import { Users } from './user.entity';
-const { signAsync, executePromise, PasswordHasher } = Utils;
-const { hashPassword } = PasswordHasher;
+const {
+  signAsync,
+  executePromise,
+  returnCatchFunction,
+  PasswordHasher,
+  MomentFunctions,
+} = Utils;
+const { comparePassword, hashPassword } = PasswordHasher;
+const {
+  addCalculatedTimestamp,
+  fetchCurrentTimestamp,
+  fetchFormattedTimestamp,
+} = MomentFunctions;
+const { Hours, Timestamp } = MomentFormat;
 
 @Injectable()
 export class UserService extends BaseService<Users> {
@@ -36,19 +52,13 @@ export class UserService extends BaseService<Users> {
     super(userRepo);
   }
 
-  public async createUser(data: RegisterUserDto) {
+  public async createUser(
+    data: RegisterUserDto,
+  ): Promise<InterfaceList.MethodResponse> {
     try {
-      if (
-        !data.is_portal_user ||
-        !data.mobile_number ||
-        !data.name ||
-        !data.primary_address
-      ) {
+      if (!data.is_portal_user || !data.mobile_number || !data.name) {
         return {
-          success: false,
-          status_code: 400,
-          response_code: 400,
-          message: 'Invalid request',
+          response_code: ResponseCodes.BAD_REQUEST,
           data: {},
         };
       }
@@ -61,11 +71,7 @@ export class UserService extends BaseService<Users> {
         this.log.info('---uniqueMobileNumber---');
         this.log.info(uniqueMobileNumber);
         return {
-          success: false,
-          status_code: 400,
-          response_code: 400,
-          message:
-            'The mobile number is already in use,\nKindly use a different number',
+          response_code: ResponseCodes.UNIQUE_USER,
           data: {},
         };
       }
@@ -96,13 +102,7 @@ export class UserService extends BaseService<Users> {
       if (createUserError) {
         this.log.info('---registerUser.createUserError---');
         this.log.info(createUserError);
-        return {
-          success: false,
-          status_code: 500,
-          response_code: 500,
-          message: 'User creation failed',
-          data: {},
-        };
+        return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
       }
       this.log.info('---registerUser.userDetails---');
       this.log.info(userDetails);
@@ -116,35 +116,35 @@ export class UserService extends BaseService<Users> {
           };
           userAccessArr.push(obj);
         });
+
         const [userAccessError, userAccess]: any[] = await executePromise(
           this.userAccessService.createAll(userAccessArr),
         );
         if (userAccessError) {
           this.log.error('---userAccessError---');
           this.log.error(userAccessError);
+          return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
         } else if (!userAccess?.length) {
           this.log.info('---!userAccess?.length---');
         }
+
         this.log.info('---userAccess---');
         this.log.info(userAccess);
       }
+
       return {
-        success: true,
-        status_code: 200,
-        response_code: 200,
-        message: 'User creation successful',
+        response_code: ResponseCodes.SUCCESS,
         data: userDetails,
       };
     } catch (error) {
-      this.log.error('catch.return');
-      this.log.error(error);
-      return {
-        success: false,
-        status_code: 500,
-        response_code: 500,
-        message: 'Internal server error',
-        data: {},
-      };
+      return returnCatchFunction(error);
+    }
+  }
+
+  public async completeRegistration(data: any) {
+    try {
+    } catch (error) {
+      return returnCatchFunction(error);
     }
   }
 
@@ -169,7 +169,7 @@ export class UserService extends BaseService<Users> {
       }
 
       // Verify the password
-      if (await bcrypt.compareSync(password, user.password)) {
+      if (await comparePassword(password, user.password)) {
         // Password correct, create JWT token
         const jwtToken = await signAsync(
           { email: user.email },
@@ -276,7 +276,7 @@ export class UserService extends BaseService<Users> {
   ) {
     const user = await this.findOneWithPassword(email);
 
-    if (await bcrypt.compareSync(currentPass, user.password)) {
+    if (await comparePassword(currentPass, user.password)) {
       // Check for password minimums
       const passTestResult = owasp.test(newPass);
       if (!passTestResult.strong) {
@@ -298,7 +298,7 @@ export class UserService extends BaseService<Users> {
       // minimum requirements, update their user record with the new password
       await this.update(
         { id: user.id },
-        { password: await bcrypt.hashSync(newPass, 10) },
+        { password: await hashPassword(newPass) },
       );
 
       return {
@@ -340,9 +340,10 @@ export class UserService extends BaseService<Users> {
       { id: user.id },
       {
         password_reset_token: token,
-        password_reset_token_ttl: moment()
-          .add(4, 'hours')
-          .toDate(),
+        password_reset_token_ttl: fetchFormattedTimestamp(
+          addCalculatedTimestamp(fetchCurrentTimestamp(), 4, Hours),
+          Timestamp,
+        ),
       },
     );
 
@@ -409,7 +410,7 @@ export class UserService extends BaseService<Users> {
     await this.update(
       { id: user.id },
       {
-        password: await bcrypt.hashSync(NewPassword, 10),
+        password: await hashPassword(NewPassword),
         password_reset_token: null,
         password_reset_token_ttl: null,
       },

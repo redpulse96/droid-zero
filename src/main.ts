@@ -6,6 +6,7 @@ import { BootstrapConsole } from 'nestjs-console';
 import * as owasp from 'owasp-password-strength-test';
 import { AppModule } from './app.module';
 import { ConsoleAppModule } from './consoleApp.module';
+import { TransformInterceptor } from './interceptor/transform.interceptor';
 import { DotenvService } from './modules/dotenv/dotenv.service';
 import { BackendLogger } from './modules/logger/BackendLogger';
 
@@ -35,6 +36,8 @@ async function bootstrap() {
   // a type for the input of a network request it will get validated before processing.
   // See: https://docs.nestjs.com/techniques/validation
   app.useGlobalPipes(new ValidationPipe());
+
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   logger.debug(`Listening on port: ${dotenvService.get('PORT')}`);
 

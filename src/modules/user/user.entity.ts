@@ -7,7 +7,7 @@ import {
   OneToMany,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 enum Status {
   Active = 'active',
@@ -19,64 +19,53 @@ enum Status {
 export class Users {
   @PrimaryColumn()
   @PrimaryGeneratedColumn('uuid')
-
   public id?: string;
 
   @Column()
-
   public name: string;
 
   @Column()
-
   public mobile_number: string;
 
   @Column({
     type: 'simple-json',
     nullable: true,
   })
-
   public primary_address: any;
 
   @Column({
     type: 'simple-json',
     nullable: true,
   })
-
   public secondary_address: any;
 
   @Column({
     nullable: true,
   })
-
   public email: string;
 
   @Column({ select: false })
   public password: string;
 
   @Column({ default: 0 })
-
   public login_attempts: number;
 
   @Column({
     nullable: true,
   })
-
   public api_key?: string;
 
   @Column({
     nullable: true,
   })
-
   public password_reset_token?: string;
 
   @Column({
     nullable: true,
   })
-
-  public password_reset_token_ttl?: Date;
+  public password_reset_token_ttl?: string;
 
   @Column({ default: false })
-
   public is_locked: boolean;
 
   @Column({ default: false })
@@ -101,7 +90,6 @@ export class Users {
     type => UserAccess,
     userAccess => userAccess.user,
   )
-
   public user_access: UserAccess;
 
   @Column({

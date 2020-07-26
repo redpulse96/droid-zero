@@ -94,10 +94,10 @@ export class BackendLogger extends Logger {
   public error(message: any, trace: string = '') {
     if (trace) {
       this.winstonLog(message, 'error', trace);
-      super.error(message, trace);
+      super.error(message.toString(), trace);
     } else {
       this.winstonLog(message, 'error');
-      super.error(message);
+      super.error(message.toString());
     }
   }
 

@@ -1,12 +1,56 @@
 import * as bcrypt from 'bcryptjs';
+import moment from 'moment';
+import { DotenvService } from 'src/modules/dotenv/dotenv.service';
+import { BackendLogger } from 'src/modules/logger/BackendLogger';
 import { promisify } from 'util';
+import { MomentFormat } from './constants';
 const jwt = require('jsonwebtoken');
 const { genSalt, hash, compare } = bcrypt;
+const { Timestamp } = MomentFormat;
+const dotenvService: DotenvService = new DotenvService(__filename);
+const log = new BackendLogger('Utils');
 
 export namespace Utils {
+  export const signAsync = promisify(jwt.sign);
+
+  export const verifyAsync = promisify(jwt.verify);
+
+  export namespace MomentFunctions {
+    export function fetchCurrentTimestamp(): string {
+      return moment().format(Timestamp);
+    }
+    export function fetchFormattedTimestamp(
+      timestamp: string = this.fetchCurrentTimestamp(),
+      format: string = Timestamp,
+    ): string {
+      return moment(timestamp)
+        .format(format)
+        .toString();
+    }
+    export function addCalculatedTimestamp(
+      timestamp: string,
+      offset: number,
+      unit: any,
+    ): string {
+      return moment(timestamp)
+        .add(offset, unit)
+        .format(Timestamp)
+        .toString();
+    }
+    export function subtractCalculatedTimestamp(
+      timestamp: string,
+      offset: number,
+      unit: any,
+    ): string {
+      return moment(timestamp)
+        .subtract(offset, unit)
+        .format(Timestamp)
+        .toString();
+    }
+  }
   export namespace PasswordHasher {
     export async function hashPassword(password: string): Promise<string> {
-      const salt: string = await genSalt(this.rounds);
+      const salt: string = await genSalt(dotenvService.get('ROUNDS'));
       return hash(password, salt);
     }
     export async function comparePassword(
@@ -39,6 +83,13 @@ export namespace Utils {
 
     return text;
   }
-  export const signAsync = promisify(jwt.sign);
-  export const verifyAsync = promisify(jwt.verify);
+
+  export function returnCatchFunction(error: any) {
+    log.error('catch.return');
+    log.error(error);
+    return {
+      response_code: 'default',
+      data: error,
+    };
+  }
 }
