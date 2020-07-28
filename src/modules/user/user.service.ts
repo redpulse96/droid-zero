@@ -1,11 +1,10 @@
 import {
   BadRequestException,
   Injectable,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import moment from 'moment';
-import { authenticator } from 'otplib';
 import * as owasp from 'owasp-password-strength-test';
 import * as randToken from 'rand-token';
 import { BaseService } from 'src/base.service';
@@ -17,7 +16,7 @@ import {
   InterfaceList,
   MomentFormat,
   ResponseCodes,
-  Status,
+  Status
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { In, Repository } from 'typeorm';
@@ -25,7 +24,7 @@ import {
   CompleteRegistration,
   FetchUserByFilter,
   RegisterUserDto,
-  ValidateOtp,
+  ValidateOtp
 } from './dtos/userInput.dto';
 import { Users } from './user.entity';
 const {
@@ -47,7 +46,7 @@ const { Hours, Timestamp } = MomentFormat;
 export class UserService extends BaseService<Users> {
   private readonly log = new BackendLogger(UserService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Users)
     private readonly userRepo: Repository<Users>,
     private readonly dotenvService: DotenvService,
@@ -81,9 +80,9 @@ export class UserService extends BaseService<Users> {
         };
       }
 
-      const otp: string = authenticator.generate(
-        this.dotenvService.get('OTP_SECRET'),
-      );
+      const otp: string = '123456';// authenticator.generate(
+      //   this.dotenvService.get('OTP_SECRET'),
+      // );
       const createUser: any = {
         name: data.name,
         email: data.email,
@@ -155,9 +154,7 @@ export class UserService extends BaseService<Users> {
     try {
       const [userError, user]: any[] = await executePromise(
         this.findOne({
-          id: data.id,
-          mobile_number: data.mobile_number,
-          email: data.email,
+          mobile_number: data.mobile_number ? data.mobile_number : undefined,
         }),
       );
       if (userError) {
@@ -166,9 +163,9 @@ export class UserService extends BaseService<Users> {
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
       } else if (
         !user ||
-        user?.mobile_number != data.mobile_number ||
-        user?.id != data.id ||
-        user?.email != data.email
+        (data.mobile_number && user?.mobile_number != data.mobile_number) ||
+        (data.id && user?.id != data.id) ||
+        (data.email && user?.email != data.email)
       ) {
         this.log.info('fetchUserFromMobileNumber.!user');
         return { response_code: ResponseCodes.BAD_REQUEST };
@@ -188,15 +185,12 @@ export class UserService extends BaseService<Users> {
   public async validateOtp(
     req: ValidateOtp,
   ): Promise<InterfaceList.MethodResponse> {
-    if (!req.otp || !req.is_portal_user || !req.mobile_number) {
+    if (!req.otp || !req.mobile_number) {
       return { response_code: ResponseCodes.BAD_REQUEST };
     }
     try {
       const [userError, user]: any[] = await executePromise(
-        this.findOne({
-          mobile_number: req.mobile_number,
-          is_portal_user: req.is_portal_user,
-        }),
+        this.findOneWithPassword(req.mobile_number),
       );
 
       if (userError) {
@@ -253,7 +247,7 @@ export class UserService extends BaseService<Users> {
       const filter = { id: user.id };
       const updateObj = { ...req.update_obj, status: Status.Active };
       const [updateError, updateUser]: any[] = await executePromise(
-        this.update(filter, updateObj),
+        this.userRepo.update(filter, updateObj),
       );
       if (updateError) {
         this.log.error('completeRegistration.updateError');
@@ -264,7 +258,10 @@ export class UserService extends BaseService<Users> {
 
       return {
         response_code: ResponseCodes.USER_REGISTERED,
-        data: updateUser,
+        data: {
+          ...user,
+          ...updateObj,
+        },
       };
     } catch (error) {
       return returnCatchFunction(error);
@@ -579,10 +576,10 @@ export class UserService extends BaseService<Users> {
       .getOne();
   }
 
-  public async findOneWithPassword(email: string) {
+  public async findOneWithPassword(mobile_number: string) {
     return this.userRepo
       .createQueryBuilder('user')
-      .where('user.email = :email', { email })
+      .where('user.mobile_number = :mobile_number', { mobile_number })
       .select(['user.id', 'user.email', 'user.is_admin', 'user.is_portal_user'])
       .leftJoinAndSelect('user.parent_user', 'parent_user')
       .leftJoinAndSelect('user.child_users', 'child_users')

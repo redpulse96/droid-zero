@@ -3,12 +3,11 @@ import {
   Controller,
   Get,
   Headers,
-  Param,
   Post,
   Put,
-  Req,
+  Query, Req,
   Request,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { RequestWithUser } from 'src/shared/types';
@@ -19,7 +18,7 @@ import { UserService } from './user.service';
 export class UserController {
   private readonly log = new BackendLogger(UserController.name);
 
-  constructor(private readonly userService: UserService) {}
+  constructor (private readonly userService: UserService) { }
 
   @Post('/initiate-registration')
   public initiateRegistration(@Req() request: Request) {
@@ -31,11 +30,12 @@ export class UserController {
 
   @Get('/fetch-by-filter')
   public fetchUserByFilter(
-    @Param('mobile_number') mobile_number?: string,
-    @Param('id') id?: string,
+    @Query('mobile_number') mobile_number?: string,
+    @Query('id') id?: string,
   ) {
     const body = { id, mobile_number };
     this.log.info('---fetchUserByFilter.body---');
+    console.log(mobile_number);
     this.log.info(body);
     return this.userService.fetchUserByFilter(body);
   }
@@ -52,7 +52,7 @@ export class UserController {
     return this.userService.validateOtp(body);
   }
 
-  @Post('/cpmplete-registration')
+  @Post('/complete-registration')
   public completeRegistration(
     @Body('mobile_number') mobile_number: string,
     @Body('update_obj') update_obj: object,
