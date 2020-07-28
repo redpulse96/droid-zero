@@ -1,12 +1,14 @@
 import {
   Body,
   Controller,
+  Get,
   Headers,
+  Param,
   Post,
   Put,
   Req,
   Request,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { RequestWithUser } from 'src/shared/types';
@@ -17,14 +19,48 @@ import { UserService } from './user.service';
 export class UserController {
   private readonly log = new BackendLogger(UserController.name);
 
-  constructor (private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
-  @Post('/create-user')
-  public async createUser(@Req() request: Request) {
+  @Post('/initiate-registration')
+  public initiateRegistration(@Req() request: Request) {
     const { body }: any = request;
-    this.log.info('---createUser.body---');
+    this.log.info('---initiateRegistration.body---');
     this.log.info(body);
-    return await this.userService.createUser(body);
+    return this.userService.initiateRegistration(body);
+  }
+
+  @Get('/fetch-by-filter')
+  public fetchUserByFilter(
+    @Param('mobile_number') mobile_number?: string,
+    @Param('id') id?: string,
+  ) {
+    const body = { id, mobile_number };
+    this.log.info('---fetchUserByFilter.body---');
+    this.log.info(body);
+    return this.userService.fetchUserByFilter(body);
+  }
+
+  @Post('/validate-otp')
+  public validateOtp(
+    @Body('otp') otp: string,
+    @Body('mobile_number') mobile_number: string,
+    @Body('is_portal_user') is_portal_user: boolean,
+  ) {
+    const body = { otp, mobile_number, is_portal_user };
+    this.log.info('---validateOtp.body---');
+    this.log.info(body);
+    return this.userService.validateOtp(body);
+  }
+
+  @Post('/cpmplete-registration')
+  public completeRegistration(
+    @Body('mobile_number') mobile_number: string,
+    @Body('update_obj') update_obj: object,
+  ) {
+    const body = { update_obj, mobile_number };
+    this.log.info('---completeRegistration.body---');
+    this.log.info(body);
+    return this.userService.completeRegistration(body);
   }
 
   @Post('/login')

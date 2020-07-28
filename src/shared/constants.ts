@@ -33,11 +33,15 @@ export namespace Status {
 
 export namespace ResponseCodes {
   export const SUCCESS: string = 'success';
+  export const FAILURE: string = 'failure';
+  export const SUCCESSFUL_FETCH: string = 'successful_fetch';
+  export const USER_CREATED: string = 'user_created';
   export const USER_REGISTERED: string = 'user_registered';
   export const BAD_REQUEST: string = 'bad_request';
   export const SERVICE_UNAVAILABLE: string = 'service_unavailable';
   export const SERVER_ERROR: string = 'server_error';
-  export const UNIQUE_USER: string = 'unique_user';
+  export const EXISTING_USER: string = 'existing_user';
+  export const EMPTY_RESPONSE: string = 'empty_response';
 }
 
 export namespace InterfaceList {

@@ -45,7 +45,25 @@ export class TransformInterceptor<T>
           success: true,
           status_code: 200,
           response_code: 200,
+          message: 'Transaction successfully executed',
+          data: handle.data || {},
+        };
+
+      case ResponseCodes.FAILURE:
+        return {
+          success: true,
+          status_code: 200,
+          response_code: 200,
           message: 'Successfully executed',
+          data: {},
+        };
+
+      case ResponseCodes.SUCCESSFUL_FETCH:
+        return {
+          success: true,
+          status_code: 200,
+          response_code: 200,
+          message: 'Transactions successfully fetched',
           data: handle.data || {},
         };
 
@@ -58,17 +76,27 @@ export class TransformInterceptor<T>
           data: handle.data || {},
         };
 
+      case ResponseCodes.USER_CREATED:
+        return {
+          success: true,
+          status_code: 200,
+          response_code: 200,
+          message:
+            'User Successfully created,\nkindly complete the registration from the application',
+          data: handle.data || {},
+        };
+
       case ResponseCodes.USER_REGISTERED:
         return {
           success: true,
           status_code: 200,
           response_code: 200,
           message:
-            'User Successfully registered,\nkindly complete the registration from the application',
+            'User Successfully registered,\nKindly login to the application',
           data: handle.data || {},
         };
 
-      case ResponseCodes.UNIQUE_USER:
+      case ResponseCodes.EXISTING_USER:
         return {
           success: false,
           status_code: 200,
@@ -92,6 +120,15 @@ export class TransformInterceptor<T>
           status_code: 503,
           response_code: 503,
           message: 'service unavailable,\nkindly try again after some time',
+          data: {},
+        };
+
+      case ResponseCodes.EMPTY_RESPONSE:
+        return {
+          success: true,
+          status_code: 200,
+          response_code: 200,
+          message: 'No desired records found',
           data: {},
         };
 

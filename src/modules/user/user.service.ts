@@ -1,10 +1,10 @@
 import {
   BadRequestException,
   Injectable,
-  UnauthorizedException
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import moment  from 'moment';
+import moment from 'moment';
 import { authenticator } from 'otplib';
 import * as owasp from 'owasp-password-strength-test';
 import * as randToken from 'rand-token';
@@ -17,11 +17,16 @@ import {
   InterfaceList,
   MomentFormat,
   ResponseCodes,
-  Status
+  Status,
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { In, Repository } from 'typeorm';
-import { RegisterUserDto } from './dtos/userInput.dto';
+import {
+  CompleteRegistration,
+  FetchUserByFilter,
+  RegisterUserDto,
+  ValidateOtp,
+} from './dtos/userInput.dto';
 import { Users } from './user.entity';
 const {
   signAsync,
@@ -42,7 +47,7 @@ const { Hours, Timestamp } = MomentFormat;
 export class UserService extends BaseService<Users> {
   private readonly log = new BackendLogger(UserService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Users)
     private readonly userRepo: Repository<Users>,
     private readonly dotenvService: DotenvService,
@@ -52,7 +57,7 @@ export class UserService extends BaseService<Users> {
     super(userRepo);
   }
 
-  public async createUser(
+  public async initiateRegistration(
     data: RegisterUserDto,
   ): Promise<InterfaceList.MethodResponse> {
     try {
@@ -71,7 +76,7 @@ export class UserService extends BaseService<Users> {
         this.log.info('---uniqueMobileNumber---');
         this.log.info(uniqueMobileNumber);
         return {
-          response_code: ResponseCodes.UNIQUE_USER,
+          response_code: ResponseCodes.EXISTING_USER,
           data: {},
         };
       }
@@ -100,11 +105,11 @@ export class UserService extends BaseService<Users> {
         this.create(createUser),
       );
       if (createUserError) {
-        this.log.info('---registerUser.createUserError---');
+        this.log.info('registerUser.createUserError');
         this.log.info(createUserError);
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
       }
-      this.log.info('---registerUser.userDetails---');
+      this.log.info('registerUser.userDetails');
       this.log.info(userDetails);
 
       if (data.userAccess?.length) {
@@ -121,14 +126,14 @@ export class UserService extends BaseService<Users> {
           this.userAccessService.createAll(userAccessArr),
         );
         if (userAccessError) {
-          this.log.error('---userAccessError---');
+          this.log.error('userAccessError');
           this.log.error(userAccessError);
           return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
         } else if (!userAccess?.length) {
-          this.log.info('---!userAccess?.length---');
+          this.log.info('!userAccess?.length');
         }
 
-        this.log.info('---userAccess---');
+        this.log.info('userAccess');
         this.log.info(userAccess);
       }
 
@@ -141,8 +146,126 @@ export class UserService extends BaseService<Users> {
     }
   }
 
-  public async completeRegistration(data: any) {
+  public async fetchUserByFilter(
+    data: FetchUserByFilter,
+  ): Promise<InterfaceList.MethodResponse> {
+    if (!data.mobile_number) {
+      return { response_code: ResponseCodes.BAD_REQUEST };
+    }
     try {
+      const [userError, user]: any[] = await executePromise(
+        this.findOne({
+          id: data.id,
+          mobile_number: data.mobile_number,
+          email: data.email,
+        }),
+      );
+      if (userError) {
+        this.log.error('fetchUserFromMobileNumber.userError');
+        this.log.error(userError);
+        return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
+      } else if (
+        !user ||
+        user?.mobile_number != data.mobile_number ||
+        user?.id != data.id ||
+        user?.email != data.email
+      ) {
+        this.log.info('fetchUserFromMobileNumber.!user');
+        return { response_code: ResponseCodes.BAD_REQUEST };
+      }
+
+      this.log.info('fetchUserFromMobileNumber.user');
+      this.log.info(user);
+      return {
+        response_code: ResponseCodes.SUCCESSFUL_FETCH,
+        data: { ...user },
+      };
+    } catch (error) {
+      return returnCatchFunction(error);
+    }
+  }
+
+  public async validateOtp(
+    req: ValidateOtp,
+  ): Promise<InterfaceList.MethodResponse> {
+    if (!req.otp || !req.is_portal_user || !req.mobile_number) {
+      return { response_code: ResponseCodes.BAD_REQUEST };
+    }
+    try {
+      const [userError, user]: any[] = await executePromise(
+        this.findOne({
+          mobile_number: req.mobile_number,
+          is_portal_user: req.is_portal_user,
+        }),
+      );
+
+      if (userError) {
+        this.log.error('validateOtp.userError');
+        this.log.error(userError);
+        return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
+      } else if (!user) {
+        this.log.info('validateOtp.!user');
+        return { response_code: ResponseCodes.BAD_REQUEST };
+      }
+      this.log.info('validateOtp.user');
+      this.log.info(user);
+
+      const isMatch: boolean = await comparePassword(req.otp, user.password);
+      this.log.info('isMatch.resp');
+      this.log.info(isMatch);
+
+      return {
+        response_code: ResponseCodes.SUCCESS,
+        data: { isMatch },
+      };
+    } catch (error) {
+      return returnCatchFunction(error);
+    }
+  }
+
+  public async completeRegistration(
+    req: CompleteRegistration,
+  ): Promise<InterfaceList.MethodResponse> {
+    if (!req?.mobile_number || !req?.update_obj) {
+      return { response_code: ResponseCodes.BAD_REQUEST };
+    }
+    try {
+      const [userError, user]: any[] = await executePromise(
+        this.findOne({
+          mobile_number: req.mobile_number,
+        }),
+      );
+      if (userError) {
+        this.log.error('completeRegistration.userError');
+        this.log.error(userError);
+        return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
+      } else if (!user) {
+        this.log.info('completeRegistration.!user');
+        return { response_code: ResponseCodes.BAD_REQUEST };
+      }
+      this.log.info('completeRegistration.user');
+      this.log.info(user);
+
+      if (user.status != Status.Pending) {
+        return { response_code: ResponseCodes.EXISTING_USER };
+      }
+
+      const filter = { id: user.id };
+      const updateObj = { ...req.update_obj, status: Status.Active };
+      const [updateError, updateUser]: any[] = await executePromise(
+        this.update(filter, updateObj),
+      );
+      if (updateError) {
+        this.log.error('completeRegistration.updateError');
+        this.log.error(updateError);
+      }
+      this.log.info('completeRegistration.updateUser');
+      this.log.info(updateUser);
+
+      return {
+        response_code: ResponseCodes.USER_REGISTERED,
+        data: updateUser,
+      };
     } catch (error) {
       return returnCatchFunction(error);
     }

@@ -16,3 +16,20 @@ export interface RegisterUserDto {
   secondary_address?: any;
   userAccess?: string[];
 }
+
+export interface FetchUserByFilter {
+  id?: string;
+  mobile_number?: string;
+  email?: string;
+}
+
+export interface ValidateOtp {
+  mobile_number: string;
+  otp: string;
+  is_portal_user: boolean;
+}
+
+export interface CompleteRegistration {
+  mobile_number: string;
+  update_obj: object;
+}
