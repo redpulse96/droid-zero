@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+// import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { BackendLogger } from '../logger/BackendLogger';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/category-input.dto';
@@ -11,7 +11,7 @@ export class CategoryController {
   constructor (private readonly categoryService: CategoryService) { }
 
   @Post('/register')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   public registerCategory(
     @Body('category_items') category_items: CreateCategoryDto[],
   ) {
@@ -21,7 +21,7 @@ export class CategoryController {
   }
 
   @Get('/fetch-by-filter')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   public fetchCategoryListByFilter(
     @Query('name') name?: string,
     @Query('id') id?: string,
@@ -34,7 +34,7 @@ export class CategoryController {
   }
 
   @Post('/update-category')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   public updateCategory(
     @Body('id') id: string,
     @Body('update_obj') update_obj: any,

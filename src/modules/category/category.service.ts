@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/base.service';
 import { ImagesPath, InterfaceList, ResponseCodes, Status } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { DotenvService } from '../dotenv/dotenv.service';
 import { BackendLogger } from '../logger/BackendLogger';
 import { Category } from './category.entity';
@@ -61,28 +61,26 @@ export class CategoryService extends BaseService<Category> {
 
   public async fetchCategoryListByFilter(category_filter: FetchCategoryDto): Promise<InterfaceList.MethodResponse> {
     try {
-      const filter = {
-        id: category_filter?.id ? category_filter.id : undefined,
-        name: category_filter?.name ? category_filter.name : undefined,
-        code: category_filter?.code ? category_filter.code : undefined,
-        status: Status.Active
-      };
+      const filter: any = { status: Status.Active };
+      category_filter?.id?.length && (filter.id = In([].concat(category_filter.id)));
+      category_filter?.name && (filter.name = category_filter.name);
+      category_filter?.code && (filter.code = category_filter.code);
       this.log.info('fetchCategoryListByFilter.filter');
       this.log.info(filter);
-      const [categoryError, category]: any[] = await executePromise(this.findAll(filter, ['sub_categories']));
+      const [categoryError, categories]: any[] = await executePromise(this.findAll(filter));
       if (categoryError) {
         this.log.error('categoryError');
         this.log.error(categoryError);
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
-      } else if (!category?.length) {
-        this.log.info('!category?.length');
+      } else if (!categories?.length) {
+        this.log.info('!categories?.length');
         return { response_code: ResponseCodes.BAD_REQUEST };
       }
-      this.log.info('category');
-      this.log.info(category);
+      this.log.info('categories');
+      this.log.info(categories);
       return {
         response_code: ResponseCodes.SUCCESSFUL_FETCH,
-        data: { category }
+        data: { categories }
       };
     } catch (error) {
       return returnCatchFunction(error);
