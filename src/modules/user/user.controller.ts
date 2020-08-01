@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Headers,
-  Post,
-  Put,
-  Query, Req,
-  Request,
-  UseGuards
-} from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Put, Query, Req, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { RequestWithUser } from 'src/shared/types';
 import { BackendLogger } from '../logger/BackendLogger';
@@ -64,10 +54,10 @@ export class UserController {
   }
 
   @Post('/login')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   public login(@Req() request: Request) {
     const { body }: any = request;
-    return this.userService.login(body.email, body.password);
+    return this.userService.login(body.mobile_number, body.password);
   }
 
   @Post('/request-password-reset')

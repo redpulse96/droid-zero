@@ -2,7 +2,7 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
-  NestInterceptor,
+  NestInterceptor
 } from '@nestjs/common';
 import { ServerResponse } from 'http';
 import { Observable } from 'rxjs';
@@ -45,7 +45,7 @@ export class TransformInterceptor<T>
           success: true,
           status_code: 200,
           response_code: 200,
-          message: 'Transaction successfully executed',
+          message: 'Transaction successfully created',
           data: handle.data || {},
         };
 
@@ -130,6 +130,51 @@ export class TransformInterceptor<T>
           response_code: 200,
           message: 'No desired records found',
           data: {},
+        };
+
+      case ResponseCodes.INVALID_USER:
+        return {
+          success: true,
+          status_code: 400,
+          response_code: 200,
+          message: 'Invalid mobile number and/or password. Upon 5 incorrect logins the account will be locked',
+          data: {},
+        };
+
+      case ResponseCodes.USER_LOCKED:
+        return {
+          success: true,
+          status_code: 400,
+          response_code: 200,
+          message: 'Account is locked due to too many login attempts, please contact system administrator for assistance',
+          data: {},
+        };
+
+      case ResponseCodes.LOGIN_SUCCESSFUL:
+        return {
+          success: true,
+          status_code: 200,
+          response_code: 200,
+          message: 'User has successfully logged in',
+          data: handle.data || {},
+        };
+
+      case ResponseCodes.INVALID_CREDENTIALS:
+        return {
+          success: true,
+          status_code: 400,
+          response_code: 200,
+          message: 'Invalid email and/or password. Upon 5 incorrect logins the account will be locked',
+          data: {},
+        };
+
+      case ResponseCodes.UPDATE_SUCCESSFUL:
+        return {
+          success: true,
+          status_code: 200,
+          response_code: 200,
+          message: 'Transaction instance updated successfully',
+          data: handle.data || {},
         };
 
       default:

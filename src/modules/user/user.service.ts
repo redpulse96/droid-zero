@@ -1,7 +1,6 @@
 import {
   BadRequestException,
-  Injectable,
-  UnauthorizedException
+  Injectable
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import moment from 'moment';
@@ -25,7 +24,7 @@ import {
   FetchUserByFilter,
   RegisterUserDto,
   ValidateOtp
-} from './dtos/userInput.dto';
+} from './dtos/user-input.dto';
 import { Users } from './user.entity';
 const {
   signAsync,
@@ -60,7 +59,7 @@ export class UserService extends BaseService<Users> {
     data: RegisterUserDto,
   ): Promise<InterfaceList.MethodResponse> {
     try {
-      if (!data.is_portal_user || !data.mobile_number || !data.name) {
+      if (!data.mobile_number || !data.name) {
         return {
           response_code: ResponseCodes.BAD_REQUEST,
           data: {},
@@ -152,6 +151,9 @@ export class UserService extends BaseService<Users> {
       return { response_code: ResponseCodes.BAD_REQUEST };
     }
     try {
+      const filter = {
+        mobile_number: data.mobile_number,
+      };
       const [userError, user]: any[] = await executePromise(
         this.findOne({
           mobile_number: data.mobile_number ? data.mobile_number : undefined,
@@ -268,124 +270,90 @@ export class UserService extends BaseService<Users> {
     }
   }
 
-  public async login(email: string, password: string) {
-    const user = await this.findOneWithPassword(email);
-
-    if (user) {
-      this.log.info('Attempting to login user');
-      this.log.info(user.email);
-      // Check if the account is locked
-      if (user.is_locked) {
-        this.log.warn('Users tried to log into locked account');
-        return {
-          success: false,
-          status_code: 400,
-          response_code: 400,
-          message: new UnauthorizedException(
-            'This account is locked, please contact the system administrator for assistance',
-          ),
-          data: {},
-        };
-      }
-
-      // Verify the password
-      if (await comparePassword(password, user.password)) {
-        // Password correct, create JWT token
-        const jwtToken = await signAsync(
-          { email: user.email },
-          this.dotenvService.get('APP_KEY'),
-          { expiresIn: '12h' },
-        );
-
-        const filter = { id: user.id };
-        const updateObj = { login_attempts: user.login_attempts + 1 };
-        const [updateUserError, updateUser]: any[] = await executePromise(
-          this.update(filter, updateObj),
-        );
-        if (updateUserError) {
-          this.log.error('---updateUserError---');
-          this.log.error(updateUserError);
-        }
-        this.log.info('---updateUser---');
-        this.log.info(updateUser);
-
-        const userServiceFilter = {
-          user_id: user.id,
-          status: Status.Active,
-        };
-        const [userAccessError, userAccess]: any[] = await executePromise(
-          this.userAccessService.findAll(userServiceFilter),
-        );
-        if (userAccessError) {
-          this.log.error('---userAccessError---');
-          this.log.error(userAccessError);
-          return {
-            success: false,
-            status_code: 500,
-            response_code: 500,
-            message: 'Internal server error',
-            data: {},
-          };
-        }
-        this.log.info('---userAccess---');
-        this.log.info(userAccess);
-        return {
-          success: true,
-          status_code: 200,
-          response_code: 200,
-          message: 'User logged in',
-          data: {
-            userAccess,
-            token: jwtToken,
-            parentUser: user.parent_user,
-            IsAdmin: user.is_admin ? user.is_admin : false,
-            IsPortalUser: user.is_portal_user ? user.is_portal_user : false,
-          },
-        };
-      } else {
-        // Invalid password given, add the bad login attempt to the database
-        await this.update(
-          { id: user.id },
-          { login_attempts: user.login_attempts + 1 },
-        );
-        this.log.warn('Invalid password attempt');
-
-        if (user.login_attempts >= 5) {
-          await this.update({ id: user.id }, { is_locked: true });
-          this.log.error('Account now locked from too many login attempts');
-
-          return {
-            success: false,
-            status_code: 400,
-            response_code: 400,
-            message:
-              'Account is locked due to too many login attempts, please contact system administrator for assistance.',
-            data: {},
-          };
-        } else {
-          return {
-            success: false,
-            status_code: 400,
-            response_code: 400,
-            message: new UnauthorizedException(
-              'Invalid email and/or password. Upon 5 incorrect logins the account will be locked',
-            ),
-            data: {},
-          };
-        }
-      }
-    } else {
+  public async login(mobile_number: string, password: string): Promise<InterfaceList.MethodResponse> {
+    const [userError, user]: any[] = await executePromise(this.findOneWithPassword(mobile_number));
+    if (userError) {
+      this.log.error('userError');
+      this.log.error(userError);
+      return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
+    } else if (!user) {
       this.log.error('Login attempt unsuccessful, user not found:');
-      this.log.error(email);
-      return {
-        success: false,
-        status_code: 400,
-        response_code: 400,
-        message: new UnauthorizedException(
-          'Invalid email and/or password. Upon 5 incorrect logins the account will be locked',
-        ),
-        data: {},
+      this.log.error(mobile_number);
+      return { response_code: ResponseCodes.INVALID_USER };
+    }
+    this.log.info('Attempting to login user');
+    this.log.info(user.email);
+
+    // Check if the account is locked
+    if (user.is_locked) {
+      this.log.warn('Users tried to log into locked account');
+      return { response_code: ResponseCodes.USER_LOCKED };
+    }
+
+    // Verify the password
+    if (await comparePassword(password, user.password)) {
+      // Password correct, create JWT token
+      const jwtToken = await signAsync(
+        { mobile_number: user.mobile_number },
+        this.dotenvService.get('APP_KEY'),
+        { expiresIn: '12h' },
+      );
+
+      const filter = { id: user.id };
+      const updateObj = { login_attempts: user.login_attempts + 1 };
+      const [updateUserError, updateUser]: any[] = await executePromise(
+        this.update(filter, updateObj),
+      );
+      if (updateUserError) {
+        this.log.error('updateUserError');
+        this.log.error(updateUserError);
+      }
+      this.log.info('updateUser');
+      this.log.info(updateUser);
+
+      const userServiceFilter = {
+        user_id: user.id,
+        status: Status.Active,
       };
+      const [userAccessError, userAccess]: any[] = await executePromise(
+        this.userAccessService.findAll(userServiceFilter),
+      );
+      if (userAccessError) {
+        this.log.error('userAccessError');
+        this.log.error(userAccessError);
+        return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
+      } else if (!userAccess?.length) {
+        this.log.error('!userAccess?.length');
+        // return { response_code: ResponseCodes.EMPTY_RESPONSE };
+      }
+      this.log.info('userAccess');
+      this.log.info(userAccess);
+
+      return {
+        response_code: ResponseCodes.LOGIN_SUCCESSFUL,
+        data: {
+          userAccess,
+          token: jwtToken,
+          parentUser: user.parent_user,
+          IsAdmin: user.is_admin ? user.is_admin : false,
+          IsPortalUser: user.is_portal_user ? user.is_portal_user : false,
+        },
+      };
+    } else {
+      // Invalid password given, add the bad login attempt to the database
+      await this.update(
+        { id: user.id },
+        { login_attempts: user.login_attempts + 1 },
+      );
+      this.log.warn('Invalid password attempt');
+
+      if (user.login_attempts >= 5) {
+        await this.update({ id: user.id }, { is_locked: true });
+        this.log.error('Account now locked from too many login attempts');
+        return { response_code: ResponseCodes.USER_LOCKED };
+      } else {
+        return { response_code: ResponseCodes.INVALID_CREDENTIALS };
+      }
     }
   }
 
@@ -557,30 +525,11 @@ export class UserService extends BaseService<Users> {
     return true;
   }
 
-  public async findGroupUsers(group: string) {
-    return this.userRepo
-      .createQueryBuilder('users')
-      .select(['users.id', 'users.email', 'users.locked'])
-      .leftJoin('users.access', 'access')
-      .where('users.group = :group', { group })
-      .getMany();
-  }
-
-  public async findUserRiskProfileInfo(userId: string) {
-    return this.userRepo
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.riskProfile', 'riskProfile')
-      .leftJoinAndSelect('riskProfile.riskProfileItems', 'riskProfileItems')
-      .leftJoinAndSelect('riskProfileItems.reportItem', 'reportItem')
-      .where('user.id = :userId', { userId })
-      .getOne();
-  }
-
   public async findOneWithPassword(mobile_number: string) {
     return this.userRepo
       .createQueryBuilder('user')
       .where('user.mobile_number = :mobile_number', { mobile_number })
-      .select(['user.id', 'user.email', 'user.is_admin', 'user.is_portal_user'])
+      .select(['user.id', 'user.mobile_number', 'user.email', 'user.is_admin', 'user.is_portal_user', 'user.login_attempts'])
       .leftJoinAndSelect('user.parent_user', 'parent_user')
       .leftJoinAndSelect('user.child_users', 'child_users')
       .addSelect('user.password')

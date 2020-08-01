@@ -1,4 +1,6 @@
 import * as bcrypt from 'bcryptjs';
+import md5 from 'crypto-js/md5';
+import formidable from 'formidable';
 import moment from 'moment';
 import { DotenvService } from 'src/modules/dotenv/dotenv.service';
 import { BackendLogger } from 'src/modules/logger/BackendLogger';
@@ -50,7 +52,8 @@ export namespace Utils {
   }
   export namespace PasswordHasher {
     export async function hashPassword(password: string): Promise<string> {
-      const salt: string = await genSalt(dotenvService.get('ROUNDS'));
+      const salt_rounds: number = parseInt(dotenvService.get('ROUNDS'));
+      const salt: string = await genSalt(salt_rounds);
       return hash(password, salt);
     }
     export async function comparePassword(
@@ -61,7 +64,7 @@ export namespace Utils {
     }
   }
 
-  export function executePromise(promise: Promise<any>): Promise<any[]> {
+  export function executePromise(promise: Promise<any>): Promise<any> {
     return promise
       .then((res: any) => {
         return [null, res];
@@ -74,8 +77,7 @@ export namespace Utils {
   export function generateRandomStr(length: number) {
     // Create a random string (like for generating API key)
     let text = '';
-    const possible =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const possible = '0123456789';
 
     for (let i = 0; i < length; i++) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -91,5 +93,14 @@ export namespace Utils {
       response_code: 'default',
       data: error,
     };
+  }
+
+  export function generateReferenceID(...data: any[]) {
+    const encryption_str: string[] = [].concat(...data, Utils.MomentFunctions.fetchCurrentTimestamp());
+    return md5(encryption_str.join(''));
+  }
+
+  export function uploadImage(file: any, file_path: string) {
+    const form = new formidable.IncomingForm();
   }
 }

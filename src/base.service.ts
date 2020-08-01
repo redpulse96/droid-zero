@@ -3,7 +3,7 @@ import { Brackets, In, Repository } from 'typeorm';
 
 @Injectable()
 export class BaseService<T> {
-  constructor(public repo: Repository<T>) {}
+  constructor (public repo: Repository<T>) { }
 
   public getRepo() {
     return this.repo;
@@ -50,7 +50,7 @@ export class BaseService<T> {
     // We preform this extra DB operation since this will load
     // any needed relations for the entity.
     return this.repo.find({
-      where: { id: In(savedEntity.filter((v: any) => v.id)) },
+      where: { id: In([].concat(savedEntity.map((v: any) => v.id))) },
       relations,
     });
   }

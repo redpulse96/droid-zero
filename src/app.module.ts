@@ -6,12 +6,15 @@ import { join } from 'path';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { SessionMiddleware } from './middleware/session.middleware';
 import { AuthModule } from './modules/auth/auth.module';
+import { CategoryModule } from './modules/category/category.module';
 import { DatabaseModule } from './modules/database/database.module';
 import { DotenvModule } from './modules/dotenv/dotenv.module';
 import { DotenvService } from './modules/dotenv/dotenv.service';
 import { EmailModule } from './modules/email/email.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { ProductsModule } from './modules/products/products.module';
 import { SchedulerModule } from './modules/scheduler/scheduler.module';
+import { SubCategoryModule } from './modules/sub-category/sub-category.module';
 import { UserModule } from './modules/user/user.module';
 import { UtilModule } from './modules/util/util.module';
 
@@ -31,7 +34,7 @@ import { UtilModule } from './modules/util/util.module';
           password: dotenvService.get('DB_PASSWORD'),
           database: dotenvService.get('DB_NAME'),
           entities: [join(__dirname, '/**/*.entity.{d.js,d.ts,js,ts}')],
-          synchronize: false, // dotenvService.get('NODE_ENV') === 'development',
+          synchronize: dotenvService.get('NODE_ENV') === 'development',
           logging: dotenvService.get('NODE_ENV') === 'development',
           logger: 'file',
         } as any),
@@ -54,6 +57,9 @@ import { UtilModule } from './modules/util/util.module';
     NotificationModule,
     forwardRef(() => UtilModule),
     forwardRef(() => UserModule),
+    forwardRef(() => CategoryModule),
+    forwardRef(() => ProductsModule),
+    forwardRef(() => SubCategoryModule),
     DatabaseModule,
     SchedulerModule,
   ],

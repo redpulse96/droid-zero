@@ -1,7 +1,7 @@
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
-import { UserInputDto } from './dtos/userInput.dto';
+import { UserInputDto } from './dtos/user-input.dto';
 import { UserService } from './user.service';
 
 @UseGuards(AuthGuard)

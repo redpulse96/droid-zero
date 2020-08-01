@@ -1,3 +1,4 @@
+
 export const roles = {
   ADMIN: 'ADMIN',
 };
@@ -42,6 +43,11 @@ export namespace ResponseCodes {
   export const SERVER_ERROR: string = 'server_error';
   export const EXISTING_USER: string = 'existing_user';
   export const EMPTY_RESPONSE: string = 'empty_response';
+  export const INVALID_USER: string = 'invalid_user';
+  export const USER_LOCKED: string = 'user_locked';
+  export const LOGIN_SUCCESSFUL: string = 'login_successful';
+  export const INVALID_CREDENTIALS: string = 'invalid_credentials';
+  export const UPDATE_SUCCESSFUL: string = 'update_successful';
 }
 
 export namespace InterfaceList {
@@ -56,4 +62,11 @@ export namespace InterfaceList {
     message?: string;
     data?: any;
   }
+}
+
+export namespace ImagesPath {
+  export const Category: string = '';
+  export const SubCategory: string = '';
+  export const Brands: string = '';
+  export const Products: string = '';
 }

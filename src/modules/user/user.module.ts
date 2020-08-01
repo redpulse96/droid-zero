@@ -1,13 +1,12 @@
-import { Module, Global } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { Users } from './user.entity';
 import { UserAccess } from '../userAccess/userAccess.entity';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
 import { UserAccessModule } from '../userAccess/userAccess.module';
 import { UserCommand } from './user.command';
+import { UserController } from './user.controller';
+import { Users } from './user.entity';
 import { UserResolver } from './user.resolver';
+import { UserService } from './user.service';
 
 @Global()
 @Module({
@@ -16,4 +15,4 @@ import { UserResolver } from './user.resolver';
   controllers: [UserController],
   exports: [UserService],
 })
-export class UserModule {}
+export class UserModule { }
