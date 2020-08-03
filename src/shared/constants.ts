@@ -64,6 +64,14 @@ export namespace InterfaceList {
   }
 }
 
+export namespace UserConfigs {
+  export const AppConfigs = {
+    AuthorizationType: 'Bearer_app'
+  };
+  export const PortalConfigs = {
+    AuthorizationType: 'Bearer_portal'
+  };
+}
 export namespace ImagesPath {
   export const Category: string = '';
   export const SubCategory: string = '';

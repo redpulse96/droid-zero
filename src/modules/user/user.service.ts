@@ -15,7 +15,8 @@ import {
   InterfaceList,
   MomentFormat,
   ResponseCodes,
-  Status
+  Status,
+  TOKEN_EXPIRES_IN
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { In, Repository } from 'typeorm';
@@ -296,7 +297,7 @@ export class UserService extends BaseService<Users> {
       const jwtToken = await signAsync(
         { mobile_number: user.mobile_number },
         this.dotenvService.get('APP_KEY'),
-        { expiresIn: '12h' },
+        { expiresIn: TOKEN_EXPIRES_IN },
       );
 
       const filter = { id: user.id };

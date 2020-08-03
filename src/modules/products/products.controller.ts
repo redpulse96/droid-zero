@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+// import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { BackendLogger } from '../logger/BackendLogger';
 import { CreateProductsDto } from './dto/products-input.dto';
 import { ProductService } from './products.service';
@@ -11,7 +11,7 @@ export class ProductsController {
   constructor (private readonly productService: ProductService) { }
 
   @Post('/register')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   public registerProducts(
     @Body('product_items') product_items: CreateProductsDto[],
   ) {
@@ -21,7 +21,7 @@ export class ProductsController {
   }
 
   @Get('/fetch-by-filter')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   public fetchProductListByFilter(
     @Query('name') name?: string,
     @Query('id') id?: string,

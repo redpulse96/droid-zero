@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+// import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { BackendLogger } from '../logger/BackendLogger';
 import { CreateSubCategoryDto } from './dto/sub-category-input.dto';
 import { SubCategoryService } from './sub-category.service';
@@ -11,7 +11,7 @@ export class SubCategoryController {
   constructor (private readonly subCategoryService: SubCategoryService) { }
 
   @Post('/register')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   public registerSubCategory(
     @Body('sub_category_items') sub_category_items: CreateSubCategoryDto[],
   ) {
@@ -21,7 +21,7 @@ export class SubCategoryController {
   }
 
   @Get('/fetch-by-filter')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   public fetchSubCategoryByFilter(
     @Query('id') id?: string,
     @Query('name') name?: string,

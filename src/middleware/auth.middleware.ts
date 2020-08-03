@@ -1,18 +1,15 @@
-import {
-  Injectable,
-  NestMiddleware,
-  UnauthorizedException
-} from '@nestjs/common';
+import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { SessionMiddleware } from 'src/middleware/session.middleware';
 import { DotenvService } from 'src/modules/dotenv/dotenv.service';
 import { BackendLogger } from 'src/modules/logger/BackendLogger';
 import { Users } from 'src/modules/user/user.entity';
 import { UserService } from 'src/modules/user/user.service';
-import { SESSION_USER } from 'src/shared/constants';
+import { SESSION_USER, UserConfigs } from 'src/shared/constants';
 import { RequestWithUser } from 'src/shared/types';
 import { Utils } from 'src/shared/util';
 const { verifyAsync } = Utils;
+const { AppConfigs, PortalConfigs } = UserConfigs;
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -51,6 +48,7 @@ export class AuthMiddleware implements NestMiddleware {
       const payload: any = await verifyAsync(
         token,
         this.dotenvService.get('APP_KEY'),
+        { ignoreExpiration: this.isApplicationUser(req) }
       );
       const mobile_number: string = payload.mobile_number;
       user = await this.userService.findOne({ mobile_number }, [
@@ -81,5 +79,19 @@ export class AuthMiddleware implements NestMiddleware {
 
     const token = authHeader.split(' ')[1];
     return token;
+  }
+
+  private isApplicationUser(req: Request) {
+    const authHeader: string = req?.headers?.authorization;
+    if (!authHeader) {
+      return false;
+    }
+    const tokenType: string = authHeader.split(' ')[0];
+    switch (tokenType) {
+      case AppConfigs.AuthorizationType:
+        return true;
+      case PortalConfigs.AuthorizationType:
+        return false;
+    }
   }
 }

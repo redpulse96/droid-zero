@@ -11,7 +11,7 @@ import { UserService } from '../user/user.service';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   private readonly log = new BackendLogger(JwtStrategy.name);
 
-  constructor(
+  constructor (
     private readonly userService: UserService,
     private readonly dotenvService: DotenvService,
   ) {
@@ -21,8 +21,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  public async validate(payload: { email: string }) {
-    const user = await this.userService.findOne({ email: payload.email });
+  public async validate(payload: { mobile_number: string; }) {
+    const user = await this.userService.findOne({ mobile_number: payload.mobile_number });
 
     if (!user) {
       this.log.debug('Invalid/expired payload:');
