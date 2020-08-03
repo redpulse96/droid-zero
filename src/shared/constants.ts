@@ -1,4 +1,3 @@
-
 export const roles = {
   ADMIN: 'ADMIN',
 };
@@ -66,10 +65,10 @@ export namespace InterfaceList {
 
 export namespace UserConfigs {
   export const AppConfigs = {
-    AuthorizationType: 'Bearer_app'
+    AuthorizationType: 'Bearer_app',
   };
   export const PortalConfigs = {
-    AuthorizationType: 'Bearer_portal'
+    AuthorizationType: 'Bearer_portal',
   };
 }
 export namespace ImagesPath {

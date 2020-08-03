@@ -96,7 +96,10 @@ export namespace Utils {
   }
 
   export function generateReferenceID(...data: any[]) {
-    const encryption_str: string[] = [].concat(...data, Utils.MomentFunctions.fetchCurrentTimestamp());
+    const encryption_str: string[] = [].concat(
+      ...data,
+      Utils.MomentFunctions.fetchCurrentTimestamp(),
+    );
     return md5(encryption_str.join(''));
   }
 

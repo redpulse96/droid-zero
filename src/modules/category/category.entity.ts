@@ -2,9 +2,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany, PrimaryColumn,
+  OneToMany,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { SubCategory } from '../sub-category/sub-category.entity';
 enum Status {
@@ -31,7 +32,10 @@ export class Category {
   @Column()
   public image_path: string;
 
-  @OneToMany(type => SubCategory, sub_category => sub_category.category)
+  @OneToMany(
+    type => SubCategory,
+    sub_category => sub_category.category,
+  )
   sub_categories: SubCategory[];
 
   @Column({

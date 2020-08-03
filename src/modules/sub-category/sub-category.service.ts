@@ -6,20 +6,18 @@ import { Utils } from 'src/shared/util';
 import { Repository } from 'typeorm';
 import { DotenvService } from '../dotenv/dotenv.service';
 import { BackendLogger } from '../logger/BackendLogger';
-import { CreateSubCategoryDto, FetchSubCategoryDto } from './dto/sub-category-input.dto';
+import {
+  CreateSubCategoryDto,
+  FetchSubCategoryDto,
+} from './dto/sub-category-input.dto';
 import { SubCategory } from './sub-category.entity';
-const {
-  executePromise,
-  returnCatchFunction,
-  generateRandomStr
-} = Utils;
-
+const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
 
 @Injectable()
 export class SubCategoryService extends BaseService<SubCategory> {
   private readonly log = new BackendLogger(SubCategoryService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(SubCategory)
     private readonly subcategoryRepo: Repository<SubCategory>,
     private readonly dotenvService: DotenvService,
@@ -27,19 +25,25 @@ export class SubCategoryService extends BaseService<SubCategory> {
     super(subcategoryRepo);
   }
 
-  public async createSubCategory(sub_category_items: CreateSubCategoryDto[]): Promise<InterfaceList.MethodResponse> {
+  public async createSubCategory(
+    sub_category_items: CreateSubCategoryDto[],
+  ): Promise<InterfaceList.MethodResponse> {
     try {
       const createSubCategoryArr: any = [];
       sub_category_items.forEach((item: CreateSubCategoryDto) => {
         createSubCategoryArr.push({
           name: item.name,
           description: item.description,
-          code: `${item.name.replace(' ', '_').toUpperCase()}${generateRandomStr(4)}`,
-          status: Status.Active
+          code: `${item.name
+            .replace(' ', '_')
+            .toUpperCase()}${generateRandomStr(4)}`,
+          status: Status.Active,
         });
       });
       this.log.info(this.dotenvService);
-      const [createError, subCategories]: any[] = await executePromise(this.create(createSubCategoryArr));
+      const [createError, subCategories]: any[] = await executePromise(
+        this.create(createSubCategoryArr),
+      );
       if (createError) {
         this.log.error('createError');
         this.log.error(createError);
@@ -52,25 +56,31 @@ export class SubCategoryService extends BaseService<SubCategory> {
       this.log.info(subCategories);
       return {
         response_code: ResponseCodes.SUCCESS,
-        data: { subCategories }
+        data: { subCategories },
       };
     } catch (error) {
       return returnCatchFunction(error);
     }
   }
 
-  public async fetchSubCategoryListByFilter(sub_category_filter: FetchSubCategoryDto): Promise<InterfaceList.MethodResponse> {
+  public async fetchSubCategoryListByFilter(
+    sub_category_filter: FetchSubCategoryDto,
+  ): Promise<InterfaceList.MethodResponse> {
     try {
       const filter: any = {
         id: sub_category_filter?.id ? sub_category_filter.id : undefined,
         name: sub_category_filter?.name ? sub_category_filter.name : undefined,
-        category: sub_category_filter?.category_id ? sub_category_filter.category_id : undefined,
+        category: sub_category_filter?.category_id
+          ? sub_category_filter.category_id
+          : undefined,
         code: sub_category_filter?.code ? sub_category_filter.code : undefined,
-        status: Status.Active
+        status: Status.Active,
       };
       this.log.info('fetchSubCategoryByFilter.filter');
       this.log.info(filter);
-      const [subCategoryError, subCategory]: any[] = await executePromise(this.findAll(filter));
+      const [subCategoryError, subCategory]: any[] = await executePromise(
+        this.findAll(filter),
+      );
       if (subCategoryError) {
         this.log.error('subCategoryError');
         this.log.error(subCategoryError);
@@ -83,7 +93,7 @@ export class SubCategoryService extends BaseService<SubCategory> {
       this.log.info(subCategory);
       return {
         response_code: ResponseCodes.SUCCESSFUL_FETCH,
-        data: { subCategory }
+        data: { subCategory },
       };
     } catch (error) {
       return returnCatchFunction(error);

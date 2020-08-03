@@ -11,4 +11,4 @@ import { SubCategoryService } from './sub-category.service';
   controllers: [SubCategoryController],
   exports: [SubCategoryService],
 })
-export class SubCategoryModule { }
+export class SubCategoryModule {}

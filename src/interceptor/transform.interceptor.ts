@@ -2,7 +2,7 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
-  NestInterceptor
+  NestInterceptor,
 } from '@nestjs/common';
 import { ServerResponse } from 'http';
 import { Observable } from 'rxjs';
@@ -137,7 +137,8 @@ export class TransformInterceptor<T>
           success: true,
           status_code: 400,
           response_code: 200,
-          message: 'Invalid mobile number and/or password. Upon 5 incorrect logins the account will be locked',
+          message:
+            'Invalid mobile number and/or password. Upon 5 incorrect logins the account will be locked',
           data: {},
         };
 
@@ -146,7 +147,8 @@ export class TransformInterceptor<T>
           success: true,
           status_code: 400,
           response_code: 200,
-          message: 'Account is locked due to too many login attempts, please contact system administrator for assistance',
+          message:
+            'Account is locked due to too many login attempts, please contact system administrator for assistance',
           data: {},
         };
 
@@ -164,7 +166,8 @@ export class TransformInterceptor<T>
           success: true,
           status_code: 400,
           response_code: 200,
-          message: 'Invalid email and/or password. Upon 5 incorrect logins the account will be locked',
+          message:
+            'Invalid email and/or password. Upon 5 incorrect logins the account will be locked',
           data: {},
         };
 

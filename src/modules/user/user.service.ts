@@ -1,7 +1,4 @@
-import {
-  BadRequestException,
-  Injectable
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import moment from 'moment';
 import * as owasp from 'owasp-password-strength-test';
@@ -16,7 +13,7 @@ import {
   MomentFormat,
   ResponseCodes,
   Status,
-  TOKEN_EXPIRES_IN
+  TOKEN_EXPIRES_IN,
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { In, Repository } from 'typeorm';
@@ -24,7 +21,7 @@ import {
   CompleteRegistration,
   FetchUserByFilter,
   RegisterUserDto,
-  ValidateOtp
+  ValidateOtp,
 } from './dtos/user-input.dto';
 import { Users } from './user.entity';
 const {
@@ -46,7 +43,7 @@ const { Hours, Timestamp } = MomentFormat;
 export class UserService extends BaseService<Users> {
   private readonly log = new BackendLogger(UserService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Users)
     private readonly userRepo: Repository<Users>,
     private readonly dotenvService: DotenvService,
@@ -80,7 +77,7 @@ export class UserService extends BaseService<Users> {
         };
       }
 
-      const otp: string = '123456';// authenticator.generate(
+      const otp: string = '123456'; // authenticator.generate(
       //   this.dotenvService.get('OTP_SECRET'),
       // );
       const createUser: any = {
@@ -271,8 +268,13 @@ export class UserService extends BaseService<Users> {
     }
   }
 
-  public async login(mobile_number: string, password: string): Promise<InterfaceList.MethodResponse> {
-    const [userError, user]: any[] = await executePromise(this.findOneWithPassword(mobile_number));
+  public async login(
+    mobile_number: string,
+    password: string,
+  ): Promise<InterfaceList.MethodResponse> {
+    const [userError, user]: any[] = await executePromise(
+      this.findOneWithPassword(mobile_number),
+    );
     if (userError) {
       this.log.error('userError');
       this.log.error(userError);
@@ -530,7 +532,14 @@ export class UserService extends BaseService<Users> {
     return this.userRepo
       .createQueryBuilder('user')
       .where('user.mobile_number = :mobile_number', { mobile_number })
-      .select(['user.id', 'user.mobile_number', 'user.email', 'user.is_admin', 'user.is_portal_user', 'user.login_attempts'])
+      .select([
+        'user.id',
+        'user.mobile_number',
+        'user.email',
+        'user.is_admin',
+        'user.is_portal_user',
+        'user.login_attempts',
+      ])
       .leftJoinAndSelect('user.parent_user', 'parent_user')
       .leftJoinAndSelect('user.child_users', 'child_users')
       .addSelect('user.password')

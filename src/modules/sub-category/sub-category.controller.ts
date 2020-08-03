@@ -8,7 +8,7 @@ import { SubCategoryService } from './sub-category.service';
 export class SubCategoryController {
   private readonly log = new BackendLogger(SubCategoryController.name);
 
-  constructor (private readonly subCategoryService: SubCategoryService) { }
+  constructor(private readonly subCategoryService: SubCategoryService) {}
 
   @Post('/register')
   // @UseGuards(AuthGuard)

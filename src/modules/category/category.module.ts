@@ -8,9 +8,12 @@ import { CategoryService } from './category.service';
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([Category, SubCategory]), SubCategoryModule],
+  imports: [
+    TypeOrmModule.forFeature([Category, SubCategory]),
+    SubCategoryModule,
+  ],
   providers: [CategoryService],
   controllers: [CategoryController],
   exports: [CategoryService],
 })
-export class CategoryModule { }
+export class CategoryModule {}

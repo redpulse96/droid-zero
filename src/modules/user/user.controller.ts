@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Headers, Post, Put, Query, Req, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Post,
+  Put,
+  Query,
+  Req,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { RequestWithUser } from 'src/shared/types';
 import { BackendLogger } from '../logger/BackendLogger';
@@ -8,7 +19,7 @@ import { UserService } from './user.service';
 export class UserController {
   private readonly log = new BackendLogger(UserController.name);
 
-  constructor (private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post('/initiate-registration')
   public initiateRegistration(@Req() request: Request) {
