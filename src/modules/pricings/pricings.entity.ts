@@ -3,9 +3,10 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToOne, PrimaryColumn,
+  OneToOne,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { Products } from '../products/products.entity';
 enum Status {
@@ -17,7 +18,7 @@ enum TaxType {
   Percentage = 'percentage',
   DiscountPercentage = 'discount_percentage',
   Discount = 'discount',
-  Absolute = 'absolute'
+  Absolute = 'absolute',
 }
 
 @Entity({ name: 'pricings' })

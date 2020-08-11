@@ -10,7 +10,7 @@ import { CreatePricingsDto } from '../pricings/dto/pricings-input.dto';
 import { PricingsService } from '../pricings/pricings.service';
 import {
   CreateProductsDto,
-  FetchProductDetailsDto
+  FetchProductDetailsDto,
 } from './dto/products-input.dto';
 import { Products } from './products.entity';
 const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
@@ -19,7 +19,7 @@ const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
 export class ProductService extends BaseService<Products> {
   private readonly log = new BackendLogger(ProductService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
     private readonly pricingService: PricingsService,
@@ -63,14 +63,14 @@ export class ProductService extends BaseService<Products> {
           item.prices.forEach((item: CreatePricingsDto) => {
             priceList.push({
               ...item,
-              productId: product.id
+              productId: product.id,
             });
           });
         }
       });
 
       const [priceError, prices]: any[] = await executePromise(
-        this.pricingService.createPricings(priceList)
+        this.pricingService.createPricings(priceList),
       );
       if (priceError) {
         this.log.error('priceError');
@@ -84,11 +84,14 @@ export class ProductService extends BaseService<Products> {
       this.log.error(prices);
 
       const [updateProductError, updateProduct]: any[] = await executePromise(
-        this.update({
-          id: product.id
-        }, {
-          total_amount: prices.totalAmount
-        })
+        this.update(
+          {
+            id: product.id,
+          },
+          {
+            total_amount: prices.totalAmount,
+          },
+        ),
       );
       if (updateProductError) {
         this.log.error('priceError');
@@ -102,7 +105,7 @@ export class ProductService extends BaseService<Products> {
       this.log.info(updateProduct);
       return {
         response_code: ResponseCodes.SUCCESS,
-        data: { updateProduct }
+        data: { updateProduct },
       };
     } catch (error) {
       return returnCatchFunction(error);

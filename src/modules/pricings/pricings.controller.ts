@@ -7,7 +7,7 @@ import { PricingsService } from './pricings.service';
 export class PricingsController {
   private readonly log = new BackendLogger(PricingsController.name);
 
-  constructor (private readonly pricingService: PricingsService) { }
+  constructor(private readonly pricingService: PricingsService) {}
 
   @Post('/register')
   // @UseGuards(AuthGuard)
@@ -31,5 +31,4 @@ export class PricingsController {
     this.log.info(body);
     return this.pricingService.fetchProductListByFilter(body);
   }
-
 }

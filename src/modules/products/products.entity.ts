@@ -1,11 +1,14 @@
 import {
   Column,
   CreateDateColumn,
-  Entity, JoinColumn,
-  ManyToOne, OneToMany,
-  OneToOne, PrimaryColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { Pricings } from '../pricings/pricings.entity';
 import { SubCategory } from '../sub-category/sub-category.entity';

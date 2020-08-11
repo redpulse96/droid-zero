@@ -8,7 +8,7 @@ import { ProductService } from './products.service';
 export class ProductsController {
   private readonly log = new BackendLogger(ProductsController.name);
 
-  constructor (private readonly productService: ProductService) { }
+  constructor(private readonly productService: ProductService) {}
 
   @Post('/register')
   // @UseGuards(AuthGuard)
