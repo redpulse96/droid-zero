@@ -8,16 +8,16 @@ import { ProductService } from './products.service';
 export class ProductsController {
   private readonly log = new BackendLogger(ProductsController.name);
 
-  constructor(private readonly productService: ProductService) {}
+  constructor (private readonly productService: ProductService) { }
 
   @Post('/register')
   // @UseGuards(AuthGuard)
-  public registerProducts(
-    @Body('product_items') product_items: CreateProductsDto[],
+  public registerProduct(
+    @Body('product_items') product_items: CreateProductsDto,
   ) {
     this.log.info('---registerProducts.product_items---');
     this.log.info(product_items);
-    return this.productService.createProducts(product_items);
+    return this.productService.createProduct(product_items);
   }
 
   @Get('/fetch-by-filter')

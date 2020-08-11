@@ -13,7 +13,7 @@ import {
   MomentFormat,
   ResponseCodes,
   Status,
-  TOKEN_EXPIRES_IN,
+  TOKEN_EXPIRES_IN
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { In, Repository } from 'typeorm';
@@ -21,7 +21,7 @@ import {
   CompleteRegistration,
   FetchUserByFilter,
   RegisterUserDto,
-  ValidateOtp,
+  ValidateOtp
 } from './dtos/user-input.dto';
 import { Users } from './user.entity';
 const {
@@ -43,7 +43,7 @@ const { Hours, Timestamp } = MomentFormat;
 export class UserService extends BaseService<Users> {
   private readonly log = new BackendLogger(UserService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Users)
     private readonly userRepo: Repository<Users>,
     private readonly dotenvService: DotenvService,

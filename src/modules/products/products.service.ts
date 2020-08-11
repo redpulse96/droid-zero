@@ -6,9 +6,11 @@ import { Utils } from 'src/shared/util';
 import { Repository } from 'typeorm';
 import { DotenvService } from '../dotenv/dotenv.service';
 import { BackendLogger } from '../logger/BackendLogger';
+import { CreatePricingsDto } from '../pricings/dto/pricings-input.dto';
+import { PricingsService } from '../pricings/pricings.service';
 import {
   CreateProductsDto,
-  FetchProductDetailsDto,
+  FetchProductDetailsDto
 } from './dto/products-input.dto';
 import { Products } from './products.entity';
 const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
@@ -17,48 +19,90 @@ const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
 export class ProductService extends BaseService<Products> {
   private readonly log = new BackendLogger(ProductService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
+    private readonly pricingService: PricingsService,
     private readonly dotenvService: DotenvService,
   ) {
     super(productsRepo);
   }
 
-  public async createProducts(
-    product_items: CreateProductsDto[],
+  public async createProduct(
+    product_items: CreateProductsDto,
   ): Promise<InterfaceList.MethodResponse> {
     try {
-      const createProductsArr: any = [];
-      product_items.forEach((item: CreateProductsDto) => {
-        createProductsArr.push({
-          name: item.name,
-          description: item.description,
-          category: item?.category_id || undefined,
-          subcategory: item?.subcategory_id || undefined,
-          code: `${item.name
-            .replace(' ', '_')
-            .toUpperCase()}${generateRandomStr(4)}`,
-          status: Status.Active,
-        });
-      });
-      this.log.info(this.dotenvService);
-      const [createError, products]: any[] = await executePromise(
-        this.create(createProductsArr),
+      const priceList: CreatePricingsDto[] = [];
+      const createProductsObj: any = {
+        name: product_items.name,
+        description: product_items.description,
+        category: product_items?.category_id || undefined,
+        subcategory: product_items?.subcategory_id || undefined,
+        code: `${product_items.name
+          .replace(' ', '_')
+          .toUpperCase()}${generateRandomStr(4)}`,
+        status: Status.Active,
+      };
+
+      const [createError, product]: any[] = await executePromise(
+        this.create(createProductsObj),
       );
       if (createError) {
         this.log.error('createError');
         this.log.error(createError);
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
-      } else if (!products?.length) {
-        this.log.info('!products?.length');
+      } else if (!product?.length) {
+        this.log.info('!product?.length');
         return { response_code: ResponseCodes.SERVER_ERROR };
       }
-      this.log.info('---products---');
-      this.log.info(products);
+      this.log.info('product');
+      this.log.info(product);
+
+      product_items.prices.forEach((item: CreateProductsDto) => {
+        if (item.prices?.length) {
+          item.prices.forEach((item: CreatePricingsDto) => {
+            priceList.push({
+              ...item,
+              productId: product.id
+            });
+          });
+        }
+      });
+
+      const [priceError, prices]: any[] = await executePromise(
+        this.pricingService.createPricings(priceList)
+      );
+      if (priceError) {
+        this.log.error('priceError');
+        this.log.error(priceError);
+        return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
+      } else if (!prices?.totalAmount) {
+        this.log.info('!prices?.totalAmount');
+        return { response_code: ResponseCodes.FAILURE };
+      }
+      this.log.error('prices.totalAmount');
+      this.log.error(prices);
+
+      const [updateProductError, updateProduct]: any[] = await executePromise(
+        this.update({
+          id: product.id
+        }, {
+          total_amount: prices.totalAmount
+        })
+      );
+      if (updateProductError) {
+        this.log.error('priceError');
+        this.log.error(priceError);
+        return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
+      } else if (!updateProduct) {
+        this.log.info('!updateProduct');
+        return { response_code: ResponseCodes.FAILURE };
+      }
+      this.log.info('updateProduct');
+      this.log.info(updateProduct);
       return {
         response_code: ResponseCodes.SUCCESS,
-        data: { products },
+        data: { updateProduct }
       };
     } catch (error) {
       return returnCatchFunction(error);
@@ -84,7 +128,7 @@ export class ProductService extends BaseService<Products> {
       this.log.info('fetchProductListByFilter.filter');
       this.log.info(filter);
       const [productsError, products]: any[] = await executePromise(
-        this.findAll(filter),
+        this.findAll(filter, ['prices']),
       );
       if (productsError) {
         this.log.error('productsError');

@@ -77,3 +77,9 @@ export namespace ImagesPath {
   export const Brands: string = '';
   export const Products: string = '';
 }
+export namespace TaxType {
+  export const Percentage: string = 'percentage';
+  export const Absolute: string = 'absolute';
+  export const DiscountPercentage: string = 'discount_percentage';
+  export const Discount: string = 'discount';
+}
