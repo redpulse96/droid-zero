@@ -39,6 +39,13 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new TransformInterceptor());
 
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: true,
+    optionsSuccessStatus: 204,
+  });
+
   logger.debug(`Listening on port: ${dotenvService.get('PORT')}`);
 
   process.on('uncaughtException', err => {

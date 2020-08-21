@@ -49,7 +49,7 @@ export class CategoryService extends BaseService<Category> {
           status: Status.Active,
         });
       });
-      this.log.info(this.dotenvService);
+
       const [categoriesError, categories]: any[] = await executePromise(
         this.createAll(createArray),
       );

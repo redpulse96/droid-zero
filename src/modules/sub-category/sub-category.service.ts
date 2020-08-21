@@ -37,23 +37,26 @@ export class SubCategoryService extends BaseService<SubCategory> {
           code: `${item.name
             .replace(' ', '_')
             .toUpperCase()}${generateRandomStr(4)}`,
+          categoryId: item.category_id ? item.category_id : null,
           status: Status.Active,
         });
       });
-      this.log.info(this.dotenvService);
       const [createError, subCategories]: any[] = await executePromise(
         this.create(createSubCategoryArr),
       );
+
       if (createError) {
         this.log.error('createError');
         this.log.error(createError);
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
       } else if (!subCategories?.length) {
         this.log.info('!subCategories?.length');
+        this.log.info(subCategories);
         return { response_code: ResponseCodes.SERVER_ERROR };
       }
       this.log.info('---subCategories---');
       this.log.info(subCategories);
+
       return {
         response_code: ResponseCodes.SUCCESS,
         data: { subCategories },
@@ -76,21 +79,25 @@ export class SubCategoryService extends BaseService<SubCategory> {
         code: sub_category_filter?.code ? sub_category_filter.code : undefined,
         status: Status.Active,
       };
+
       this.log.info('fetchSubCategoryByFilter.filter');
       this.log.info(filter);
       const [subCategoryError, subCategory]: any[] = await executePromise(
         this.findAll(filter),
       );
+
       if (subCategoryError) {
         this.log.error('subCategoryError');
         this.log.error(subCategoryError);
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
       } else if (!subCategory?.length) {
         this.log.info('!subCategory?.length');
+        this.log.info(subCategory);
         return { response_code: ResponseCodes.BAD_REQUEST };
       }
       this.log.info('subCategory');
       this.log.info(subCategory);
+
       return {
         response_code: ResponseCodes.SUCCESSFUL_FETCH,
         data: { subCategory },

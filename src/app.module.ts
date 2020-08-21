@@ -17,8 +17,6 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
 import { SubCategoryModule } from './modules/sub-category/sub-category.module';
 import { UserModule } from './modules/user/user.module';
 import { UtilModule } from './modules/util/util.module';
-import { PricingsController } from './pricings/pricings.controller';
-import { PricingsService } from './pricings/pricings.service';
 
 @Module({
   imports: [
@@ -65,8 +63,8 @@ import { PricingsService } from './pricings/pricings.service';
     DatabaseModule,
     SchedulerModule,
   ],
-  providers: [PricingsService],
-  controllers: [PricingsController],
+  providers: [],
+  controllers: [],
 })
 export class AppModule {
   public configure(consumer: MiddlewareConsumer) {

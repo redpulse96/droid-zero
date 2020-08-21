@@ -4,19 +4,25 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
-import { Pricings } from '../pricings/pricings.entity';
 import { SubCategory } from '../sub-category/sub-category.entity';
 import { Users } from '../user/user.entity';
 enum Status {
   Active = 'active',
   Inactive = 'inactive',
   Pending = 'pending',
+}
+interface prices {
+  name: string;
+  description: string;
+  type: string;
+  is_tax_applicable: boolean;
+  base_value: number;
+  final_value: number;
 }
 
 @Entity({ name: 'products' })
@@ -34,10 +40,10 @@ export class Products {
   @Column()
   public description: string;
 
-  @Column()
+  @Column({ default: null })
   public group: string;
 
-  @Column()
+  @Column({ default: null })
   public image_path: string;
 
   @ManyToOne(
@@ -49,12 +55,11 @@ export class Products {
   @Column()
   public total_amount: number;
 
-  @OneToMany(
-    type => Pricings,
-    price => price.product,
-  )
-  @JoinColumn()
-  prices: Pricings[];
+  @Column({
+    type: 'simple-json',
+    nullable: true,
+  })
+  prices: prices[];
 
   @OneToOne(
     type => Users,
