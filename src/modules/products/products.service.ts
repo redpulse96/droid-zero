@@ -5,7 +5,7 @@ import {
   InterfaceList,
   ResponseCodes,
   Status,
-  TaxType,
+  TaxType
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { Repository } from 'typeorm';
@@ -14,10 +14,9 @@ import { BackendLogger } from '../logger/BackendLogger';
 import {
   CreatePricingsDto,
   CreateProductsDto,
-  FetchProductDetailsDto,
+  FetchProductDetailsDto
 } from './dto/products-input.dto';
 import { Products } from './products.entity';
-
 const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
 const { Absolute, Discount, DiscountPercentage, Percentage } = TaxType;
 
@@ -25,7 +24,7 @@ const { Absolute, Discount, DiscountPercentage, Percentage } = TaxType;
 export class ProductService extends BaseService<Products> {
   private readonly log = new BackendLogger(ProductService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
     private readonly dotenvService: DotenvService,
@@ -71,36 +70,24 @@ export class ProductService extends BaseService<Products> {
       };
       if (product_items?.prices?.length) {
         product_items.prices.forEach((item: CreatePricingsDto) => {
-          createProductsObj.totalAmount += parseFloat(
+          const calculatedAmount = parseFloat(
             this.calculateTaxValue(item.type, item.tax_value, item.base_value),
           );
+          createProductsObj.totalAmount += calculatedAmount;
           createProductsObj.prices.push({
             name: item.name,
             description: item.description,
-            code: `${item.name
-              .replace(' ', '_')
-              .toUpperCase()}${generateRandomStr(4)}`,
-            is_tax_applicable: [Percentage, Absolute].indexOf(item.type) > -1,
             type: item.type,
+            is_tax_applicable: [Percentage, Absolute].indexOf(item.type) > -1,
             base_value: item.base_value,
             status: Status.Active,
-            final_value:
-              [Percentage, Absolute].indexOf(item.type) > -1
-                ? parseFloat(
-                    this.calculateTaxValue(
-                      item.type,
-                      item.tax_value,
-                      item.base_value,
-                    ),
-                  )
-                : item.base_value,
+            final_value: item?.type ? calculatedAmount : item.base_value,
           });
         });
       }
       const [createError, product]: any[] = await executePromise(
         this.create(createProductsObj),
       );
-
       if (createError) {
         this.log.error('createError');
         this.log.error(createError);
@@ -125,26 +112,20 @@ export class ProductService extends BaseService<Products> {
     products_filter: FetchProductDetailsDto,
   ): Promise<InterfaceList.MethodResponse> {
     try {
-      const filter: any = {
-        id: products_filter?.id ? products_filter.id : undefined,
-        name: products_filter?.name ? products_filter.name : undefined,
-        status: Status.Active,
-
-        category: products_filter?.category_id
-          ? products_filter.category_id
-          : undefined,
-        subcategory: products_filter?.subcategory_id
-          ? products_filter.subcategory_id
-          : undefined,
-        code: products_filter?.code ? products_filter.code : undefined,
-      };
+      const filter: any = { status: Status.Active };
+      products_filter?.id && (filter.id = products_filter.id);
+      products_filter?.name && (filter.name = products_filter.name);
+      products_filter?.category_id &&
+        (filter.category = products_filter.category_id);
+      products_filter?.subcategory_id &&
+        (filter.subcategory = products_filter.subcategory_id);
+      products_filter?.code && (filter.code = products_filter.code);
 
       this.log.info('fetchProductListByFilter.filter');
       this.log.info(filter);
       const [productsError, products]: any[] = await executePromise(
-        this.findAll(filter, ['prices']),
+        this.findAll(filter),
       );
-
       if (productsError) {
         this.log.error('productsError');
         this.log.error(productsError);
