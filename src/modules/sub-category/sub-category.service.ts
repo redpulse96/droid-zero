@@ -8,7 +8,7 @@ import { DotenvService } from '../dotenv/dotenv.service';
 import { BackendLogger } from '../logger/BackendLogger';
 import {
   CreateSubCategoryDto,
-  FetchSubCategoryDto,
+  FetchSubCategoryDto
 } from './dto/sub-category-input.dto';
 import { SubCategory } from './sub-category.entity';
 const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
@@ -17,7 +17,7 @@ const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
 export class SubCategoryService extends BaseService<SubCategory> {
   private readonly log = new BackendLogger(SubCategoryService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(SubCategory)
     private readonly subcategoryRepo: Repository<SubCategory>,
     private readonly dotenvService: DotenvService,
@@ -70,15 +70,12 @@ export class SubCategoryService extends BaseService<SubCategory> {
     sub_category_filter: FetchSubCategoryDto,
   ): Promise<InterfaceList.MethodResponse> {
     try {
-      const filter: any = {
-        id: sub_category_filter?.id ? sub_category_filter.id : undefined,
-        name: sub_category_filter?.name ? sub_category_filter.name : undefined,
-        category: sub_category_filter?.category_id
-          ? sub_category_filter.category_id
-          : undefined,
-        code: sub_category_filter?.code ? sub_category_filter.code : undefined,
-        status: Status.Active,
-      };
+      const filter: any = { status: Status.Active };
+      sub_category_filter?.id && (filter.id = sub_category_filter.id);
+      sub_category_filter?.name && (filter.name = sub_category_filter.name);
+      sub_category_filter?.code && (filter.code = sub_category_filter.code);
+      sub_category_filter?.category_id &&
+        (filter.category = sub_category_filter.category_id);
 
       this.log.info('fetchSubCategoryByFilter.filter');
       this.log.info(filter);
