@@ -8,7 +8,7 @@ import { DotenvService } from '../dotenv/dotenv.service';
 import { BackendLogger } from '../logger/BackendLogger';
 import {
   CreateSubCategoryDto,
-  FetchSubCategoryDto
+  FetchSubCategoryDto,
 } from './dto/sub-category-input.dto';
 import { SubCategory } from './sub-category.entity';
 const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
@@ -17,7 +17,7 @@ const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
 export class SubCategoryService extends BaseService<SubCategory> {
   private readonly log = new BackendLogger(SubCategoryService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(SubCategory)
     private readonly subcategoryRepo: Repository<SubCategory>,
     private readonly dotenvService: DotenvService,

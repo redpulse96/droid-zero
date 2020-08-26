@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { Category } from '../category/category.entity';
 enum Status {
