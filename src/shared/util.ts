@@ -60,18 +60,17 @@ export namespace Utils {
       providedPass: string,
       storedPass: string,
     ): Promise<boolean> {
-      return await !!compare(providedPass, storedPass);
+      return !!compare(providedPass, storedPass);
     }
   }
 
-  export function executePromise(promise: Promise<any>): Promise<any> {
-    return promise
-      .then((res: any) => {
-        return [null, res];
-      })
-      .catch((err: any) => {
-        return [err, null];
-      });
+  export async function executePromise(promise: Promise<any>): Promise<any> {
+    try {
+      const res = await promise;
+      return [null, res];
+    } catch (err) {
+      return [err, null];
+    }
   }
 
   export function generateRandomStr(length: number) {

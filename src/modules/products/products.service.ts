@@ -65,15 +65,23 @@ export class ProductService extends BaseService<Products> {
         total_amount: 0,
         prices: [],
         code: `${product_items.name
-          .replace(' ', '_')
+          .replace(/ /g, '_')
           .toUpperCase()}${generateRandomStr(4)}`,
       };
       if (product_items?.prices?.length) {
         product_items.prices.forEach((item: CreatePricingsDto) => {
-          const calculatedAmount = parseFloat(
-            this.calculateTaxValue(item.type, item.tax_value, item.base_value),
+          const calculatedAmount: number = parseFloat(
+            this.calculateTaxValue(
+              item.type,
+              item.tax_value,
+              product_items.base_price,
+            ),
           );
-          createProductsObj.totalAmount += calculatedAmount;
+          if ([Percentage, Absolute].indexOf(item.type) > -1) {
+            createProductsObj.total_amount += calculatedAmount;
+          } else {
+            createProductsObj.total_amount -= calculatedAmount;
+          }
           createProductsObj.prices.push({
             name: item.name,
             description: item.description,

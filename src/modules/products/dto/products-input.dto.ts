@@ -3,6 +3,7 @@ export interface CreateProductsDto {
   description: string;
   code?: string;
   group?: string;
+  base_price: number;
   category_id?: string;
   subcategory_id?: string;
   prices?: any[];

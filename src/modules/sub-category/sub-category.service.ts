@@ -35,7 +35,7 @@ export class SubCategoryService extends BaseService<SubCategory> {
           name: item.name,
           description: item.description,
           code: `${item.name
-            .replace(' ', '_')
+            .replace(/ /g, '_')
             .toUpperCase()}${generateRandomStr(4)}`,
           categoryId: item.category_id ? item.category_id : null,
           status: Status.Active,
@@ -44,7 +44,6 @@ export class SubCategoryService extends BaseService<SubCategory> {
       const [createError, subCategories]: any[] = await executePromise(
         this.create(createSubCategoryArr),
       );
-
       if (createError) {
         this.log.error('createError');
         this.log.error(createError);
