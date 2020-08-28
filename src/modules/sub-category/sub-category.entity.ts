@@ -20,23 +20,35 @@ export class SubCategory {
   @PrimaryGeneratedColumn('uuid')
   public id?: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    default: null,
+  })
   public name: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    default: null,
+  })
   public code: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    default: null,
+  })
   public description: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    default: null,
+  })
   public image_path: string;
 
   @ManyToOne(
     type => Category,
     category => category.sub_categories,
   )
-  category: Category;
+  public category: Category;
 
   @Column({
     type: 'enum',

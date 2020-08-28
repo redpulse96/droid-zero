@@ -27,7 +27,7 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
           username: dotenvService.get('DB_USER'),
           password: dotenvService.get('DB_PASSWORD'),
           database: dotenvService.get('DB_NAME'),
-          entities: ['dist/**/**.entity{.ts,.js}'], //__dirname + '/modules/**/*.entity{.ts,.js}'],
+          entities: ['dist/**/**.entity{.ts,.js}'], // __dirname + '/modules/**/*.entity{.ts,.js}'],
           synchronize: false, // dotenvService.get('NODE_ENV') === 'development',
           logging: dotenvService.get('NODE_ENV') === 'development',
           logger: 'file',

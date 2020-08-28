@@ -12,7 +12,7 @@ import { InterfaceList, ResponseCodes } from 'src/shared/constants';
 @Injectable()
 export class TransformInterceptor<T>
   implements NestInterceptor<T, InterfaceList.FinalResponse> {
-  intercept(
+  public intercept(
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<InterfaceList.FinalResponse> {
@@ -26,7 +26,7 @@ export class TransformInterceptor<T>
     );
   }
 
-  fetchResponse(
+  public fetchResponse(
     handle: InterfaceList.MethodResponse,
   ): InterfaceList.FinalResponse {
     if (!handle?.response_code) {

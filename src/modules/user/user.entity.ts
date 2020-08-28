@@ -21,10 +21,17 @@ export class Users {
   @PrimaryGeneratedColumn('uuid')
   public id?: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    default: null,
+    nullable: true,
+  })
   public name: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
   public mobile_number: string;
 
   @Column({
@@ -40,6 +47,8 @@ export class Users {
   public secondary_address: any;
 
   @Column({
+    type: 'varchar',
+    default: null,
     nullable: true,
   })
   public email: string;
@@ -51,16 +60,22 @@ export class Users {
   public login_attempts: number;
 
   @Column({
+    type: 'varchar',
+    default: null,
     nullable: true,
   })
   public api_key?: string;
 
   @Column({
+    type: 'varchar',
+    default: null,
     nullable: true,
   })
   public password_reset_token?: string;
 
   @Column({
+    type: 'varchar',
+    default: null,
     nullable: true,
   })
   public password_reset_token_ttl?: string;
@@ -78,13 +93,13 @@ export class Users {
     type => Users,
     user => user.child_users,
   )
-  parent_user: Users;
+  public parent_user: Users;
 
   @OneToMany(
     type => Users,
     user => user.parent_user,
   )
-  child_users: Users[];
+  public child_users: Users[];
 
   @OneToMany(
     type => UserAccess,

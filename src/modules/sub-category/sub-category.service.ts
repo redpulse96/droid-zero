@@ -42,7 +42,7 @@ export class SubCategoryService extends BaseService<SubCategory> {
         });
       });
       const [createError, subCategories]: any[] = await executePromise(
-        this.create(createSubCategoryArr),
+        this.createAll(createSubCategoryArr),
       );
       if (createError) {
         this.log.error('createError');

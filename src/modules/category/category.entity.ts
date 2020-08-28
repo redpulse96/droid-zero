@@ -36,7 +36,7 @@ export class Category {
     type => SubCategory,
     sub_category => sub_category.category,
   )
-  sub_categories: SubCategory[];
+  public sub_categories: SubCategory[];
 
   @Column({
     type: 'enum',

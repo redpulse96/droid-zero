@@ -32,25 +32,6 @@ export class ProductService extends BaseService<Products> {
     super(productsRepo);
   }
 
-  private calculateTaxValue(
-    taxType: string,
-    taxValue: number,
-    baseValue: number,
-  ): string {
-    switch (taxType) {
-      case Percentage:
-        return (baseValue + baseValue * (taxValue / 100)).toString();
-      case Absolute:
-        return taxValue.toString();
-      case DiscountPercentage:
-        return (baseValue - baseValue * (taxValue / 100)).toString();
-      case Discount:
-        return (baseValue - taxValue).toString();
-      default:
-        return baseValue.toString();
-    }
-  }
-
   public async createProduct(
     product_items: CreateProductsDto,
   ): Promise<InterfaceList.MethodResponse> {
@@ -152,6 +133,25 @@ export class ProductService extends BaseService<Products> {
       };
     } catch (error) {
       return returnCatchFunction(error);
+    }
+  }
+
+  private calculateTaxValue(
+    taxType: string,
+    taxValue: number,
+    baseValue: number,
+  ): string {
+    switch (taxType) {
+      case Percentage:
+        return (baseValue + baseValue * (taxValue / 100)).toString();
+      case Absolute:
+        return taxValue.toString();
+      case DiscountPercentage:
+        return (baseValue - baseValue * (taxValue / 100)).toString();
+      case Discount:
+        return (baseValue - taxValue).toString();
+      default:
+        return baseValue.toString();
     }
   }
 }

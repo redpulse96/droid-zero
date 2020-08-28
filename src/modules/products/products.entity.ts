@@ -31,26 +31,44 @@ export class Products {
   @PrimaryGeneratedColumn('uuid')
   public id?: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
   public name: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    default: null,
+    nullable: true,
+  })
   public code: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
   public description: string;
 
-  @Column({ default: null })
+  @Column({
+    type: 'varchar',
+    default: null,
+    nullable: true,
+  })
   public group: string;
 
-  @Column({ default: null })
+  @Column({
+    type: 'varchar',
+    default: null,
+    nullable: true,
+  })
   public image_path: string;
 
   @ManyToOne(
     type => SubCategory,
     sub_category => sub_category.id,
   )
-  sub_category: SubCategory;
+  public sub_category: SubCategory;
 
   @Column()
   public total_amount: number;
@@ -59,7 +77,7 @@ export class Products {
     type: 'simple-json',
     nullable: true,
   })
-  prices: prices[];
+  public prices: prices[];
 
   @OneToOne(
     type => Users,
