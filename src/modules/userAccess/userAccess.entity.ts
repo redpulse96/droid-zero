@@ -29,8 +29,8 @@ export class UserAccess {
   public access_right: string;
 
   @OneToOne(
-    type => Users,
-    user => user.user_access,
+    (type) => Users,
+    (user) => user.user_access,
   )
   @JoinColumn()
   public user: Users;

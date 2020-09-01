@@ -65,8 +65,8 @@ export class Products {
   public image_path: string;
 
   @ManyToOne(
-    type => SubCategory,
-    sub_category => sub_category.id,
+    (type) => SubCategory,
+    (sub_category) => sub_category.id,
   )
   public sub_category: SubCategory;
 
@@ -80,8 +80,8 @@ export class Products {
   public prices: prices[];
 
   @OneToOne(
-    type => Users,
-    user => user.id,
+    (type) => Users,
+    (user) => user.id,
   )
   @JoinColumn()
   public created_by: Users;

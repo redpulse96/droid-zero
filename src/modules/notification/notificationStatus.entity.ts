@@ -32,8 +32,8 @@ export class NotificationStatus {
   public uuid: string;
 
   @ManyToOne(
-    type => Notification,
-    notification => notification.notificationStatuses,
+    (type) => Notification,
+    (notification) => notification.notificationStatuses,
   )
   public notification: Notification;
 }

@@ -14,7 +14,7 @@ export class EmailService implements OnModuleInit {
   private transporter: Mail;
 
   private emailTemplates = {
-    passwordReset: token => {
+    passwordReset: (token) => {
       return `
       A password reset has been requested for your user account. Please use <a href="insert_link_here">this link</a> to reset your password.
         <br /><br />
@@ -47,7 +47,7 @@ export class EmailService implements OnModuleInit {
     `;
     },
 
-    emailNewUser: password => {
+    emailNewUser: (password) => {
       return `
     An account has been created for you on the <a href="insert_link_here">INSERT NAME HERE</a> <br/>
     <br/>

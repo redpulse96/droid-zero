@@ -45,8 +45,8 @@ export class SubCategory {
   public image_path: string;
 
   @ManyToOne(
-    type => Category,
-    category => category.sub_categories,
+    (type) => Category,
+    (category) => category.sub_categories,
   )
   public category: Category;
 

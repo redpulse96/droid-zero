@@ -19,7 +19,7 @@ export class UtilService {
    * Pauses execution for a given amount of ms
    */
   public async sleep(ms: number) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(() => resolve(), ms);
     });
   }

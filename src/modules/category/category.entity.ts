@@ -33,8 +33,8 @@ export class Category {
   public image_path: string;
 
   @OneToMany(
-    type => SubCategory,
-    sub_category => sub_category.category,
+    (type) => SubCategory,
+    (sub_category) => sub_category.category,
   )
   public sub_categories: SubCategory[];
 

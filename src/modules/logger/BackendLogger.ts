@@ -12,10 +12,10 @@ const customFormat = winston.format.combine(
   winston.format.colorize(),
   winston.format.timestamp(),
   winston.format.prettyPrint(),
-  winston.format.printf(info => formatter(info)),
+  winston.format.printf((info) => formatter(info)),
 );
 
-const formatter = info => {
+const formatter = (info) => {
   const requestId = SessionMiddleware.get(REQUEST_ID) || '-';
   const user: Users = SessionMiddleware.get(SESSION_USER);
   const email = user ? user.email : '-';

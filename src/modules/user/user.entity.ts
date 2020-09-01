@@ -90,20 +90,20 @@ export class Users {
   public is_portal_user: boolean;
 
   @ManyToOne(
-    type => Users,
-    user => user.child_users,
+    (type) => Users,
+    (user) => user.child_users,
   )
   public parent_user: Users;
 
   @OneToMany(
-    type => Users,
-    user => user.parent_user,
+    (type) => Users,
+    (user) => user.parent_user,
   )
   public child_users: Users[];
 
   @OneToMany(
-    type => UserAccess,
-    userAccess => userAccess.user,
+    (type) => UserAccess,
+    (userAccess) => userAccess.user,
   )
   public user_access: UserAccess;
 

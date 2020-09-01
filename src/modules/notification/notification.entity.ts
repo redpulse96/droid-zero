@@ -13,8 +13,8 @@ export class Notification {
   public title: string;
 
   @OneToMany(
-    type => NotificationStatus,
-    notificationStatus => notificationStatus.notification,
+    (type) => NotificationStatus,
+    (notificationStatus) => notificationStatus.notification,
   )
   public notificationStatuses: NotificationStatus[];
 }

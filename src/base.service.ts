@@ -136,11 +136,11 @@ export class BaseService<T> {
       );
     }
 
-    return new Brackets(qb => {
+    return new Brackets((qb) => {
       qb = qb.where(`LOWER(${possibleFields[0]}) LIKE LOWER(:likeQuery)`, {
         likeQuery: `%${likeQuery}%`,
       });
-      possibleFields.slice(1).forEach(field => {
+      possibleFields.slice(1).forEach((field) => {
         qb = qb.orWhere(`LOWER(${field}) LIKE LOWER(:likeQuery)`, {
           likeQuery: `%${likeQuery}%`,
         });

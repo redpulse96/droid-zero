@@ -5,4 +5,4 @@ BootstrapConsole.init({ module: ConsoleAppModule })
   .then(({ app, boot }) => {
     boot(process.argv);
   })
-  .catch(e => console.log('Error', e));
+  .catch((e) => console.log('Error', e));

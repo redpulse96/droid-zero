@@ -48,13 +48,13 @@ async function bootstrap() {
 
   logger.debug(`Listening on port: ${dotenvService.get('PORT')}`);
 
-  process.on('uncaughtException', err => {
+  process.on('uncaughtException', (err) => {
     console.log('Uncaught Exception:');
     console.log(err);
     console.log(err.stack);
   });
 
-  process.on('unhandledRejection', err => {
+  process.on('unhandledRejection', (err) => {
     console.log('Unhandled Rejection:');
     console.log(err);
   });
@@ -70,9 +70,9 @@ if (process.argv[2] === '--cli') {
       // We don't want to pass along the --cli arg to the CLI handler.
       // So a command like "node main.js --cli --help" becomes
       // "node main.js --help"
-      boot(process.argv.filter(arg => arg !== '--cli'));
+      boot(process.argv.filter((arg) => arg !== '--cli'));
     })
-    .catch(e => console.log('Error', e));
+    .catch((e) => console.log('Error', e));
 } else {
   // Otherwise just start the app
   bootstrap();
