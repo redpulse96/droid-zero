@@ -47,7 +47,7 @@ export class ProductService extends BaseService<Products> {
         prices: [],
         code: `${product_items.name
           .replace(/ /g, '_')
-          .toUpperCase()}${generateRandomStr(4)}`,
+          .toUpperCase()}_${generateRandomStr(4)}`,
       };
       if (product_items?.prices?.length) {
         product_items.prices.forEach((item: CreatePricingsDto) => {

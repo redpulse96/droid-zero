@@ -42,10 +42,10 @@ export class CategoryService extends BaseService<Category> {
           description: val.description,
           code: `${val.name
             .replace(/ /g, '_')
-            .toUpperCase()}${generateRandomStr(4)}`,
+            .toUpperCase()}_${generateRandomStr(4)}`,
           image_path: `${this.dotenvService.get('IMAGES_PATH')}${
             ImagesPath.Category
-          }${val.name.replace(' ', '_').toUpperCase()}`,
+          }${val.name.replace(/ /g, '_').toUpperCase()}`,
           status: Status.Active,
         });
       });

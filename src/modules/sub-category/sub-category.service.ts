@@ -36,7 +36,7 @@ export class SubCategoryService extends BaseService<SubCategory> {
           description: item.description,
           code: `${item.name
             .replace(/ /g, '_')
-            .toUpperCase()}${generateRandomStr(4)}`,
+            .toUpperCase()}_${generateRandomStr(4)}`,
           categoryId: item.category_id ? item.category_id : null,
           status: Status.Active,
         });
