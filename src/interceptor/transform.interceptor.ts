@@ -69,7 +69,7 @@ export class TransformInterceptor<T>
 
       case ResponseCodes.BAD_REQUEST:
         return {
-          success: true,
+          success: false,
           status_code: 400,
           response_code: 400,
           message: 'Invalid request',
@@ -163,7 +163,7 @@ export class TransformInterceptor<T>
 
       case ResponseCodes.INVALID_CREDENTIALS:
         return {
-          success: true,
+          success: false,
           status_code: 400,
           response_code: 200,
           message:

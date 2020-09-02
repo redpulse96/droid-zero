@@ -15,7 +15,7 @@ export class ProductsController {
   public registerProduct(
     @Body('product_items') product_items: CreateProductsDto,
   ) {
-    this.log.info('---registerProducts.product_items---');
+    this.log.info('registerProducts.product_items');
     this.log.info(product_items);
     return this.productService.createProduct(product_items);
   }
@@ -28,7 +28,7 @@ export class ProductsController {
     @Query('code') code?: string,
   ) {
     const body = { id, name, code };
-    this.log.info('---fetchProductListByFilter.body---');
+    this.log.info('fetchProductListByFilter.body');
     this.log.info(body);
     return this.productService.fetchProductListByFilter(body);
   }

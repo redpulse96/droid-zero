@@ -69,7 +69,7 @@ export class UserService extends BaseService<Users> {
       };
       const uniqueMobileNumber = await this.findOne(filter);
       if (uniqueMobileNumber) {
-        this.log.info('---uniqueMobileNumber---');
+        this.log.info('uniqueMobileNumber');
         this.log.info(uniqueMobileNumber);
         return {
           response_code: ResponseCodes.EXISTING_USER,

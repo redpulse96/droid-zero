@@ -15,7 +15,7 @@ export class CategoryController {
   public registerCategory(
     @Body('category_items') category_items: CreateCategoryDto[],
   ) {
-    this.log.info('---registerCategory.category_items---');
+    this.log.info('registerCategory.category_items');
     this.log.info(category_items);
     return this.categoryService.createCategory(category_items);
   }
@@ -28,7 +28,7 @@ export class CategoryController {
     @Query('code') code?: string,
   ) {
     const body = { id, name, code };
-    this.log.info('---fetchUserByFilter.body---');
+    this.log.info('fetchUserByFilter.body');
     this.log.info(body);
     return this.categoryService.fetchCategoryListByFilter(body);
   }
@@ -40,7 +40,7 @@ export class CategoryController {
     @Body('update_obj') update_obj: any,
   ) {
     const body = { id, update_obj };
-    this.log.info('---updateCategory.body---');
+    this.log.info('updateCategory.body');
     this.log.info(body);
     return this.categoryService.updateCategory(body);
   }

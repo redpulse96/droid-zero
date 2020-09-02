@@ -53,7 +53,7 @@ export class SubCategoryService extends BaseService<SubCategory> {
         this.log.info(subCategories);
         return { response_code: ResponseCodes.SERVER_ERROR };
       }
-      this.log.info('---subCategories---');
+      this.log.info('subCategories');
       this.log.info(subCategories);
 
       return {

@@ -24,7 +24,7 @@ export class UserController {
   @Post('/initiate-registration')
   public initiateRegistration(@Req() request: Request) {
     const { body }: any = request;
-    this.log.info('---initiateRegistration.body---');
+    this.log.info('initiateRegistration.body');
     this.log.info(body);
     return this.userService.initiateRegistration(body);
   }
@@ -35,7 +35,7 @@ export class UserController {
     @Query('id') id?: string,
   ) {
     const body = { id, mobile_number };
-    this.log.info('---fetchUserByFilter.body---');
+    this.log.info('fetchUserByFilter.body');
     console.log(mobile_number);
     this.log.info(body);
     return this.userService.fetchUserByFilter(body);
@@ -48,7 +48,7 @@ export class UserController {
     @Body('is_portal_user') is_portal_user: boolean,
   ) {
     const body = { otp, mobile_number, is_portal_user };
-    this.log.info('---validateOtp.body---');
+    this.log.info('validateOtp.body');
     this.log.info(body);
     return this.userService.validateOtp(body);
   }
@@ -59,7 +59,7 @@ export class UserController {
     @Body('update_obj') update_obj: object,
   ) {
     const body = { update_obj, mobile_number };
-    this.log.info('---completeRegistration.body---');
+    this.log.info('completeRegistration.body');
     this.log.info(body);
     return this.userService.completeRegistration(body);
   }
