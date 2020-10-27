@@ -32,4 +32,11 @@ export class ProductsController {
     this.log.info(body);
     return this.productService.fetchProductListByFilter(body);
   }
+
+  @Get('/fetch-by-filter')
+  // @UseGuards(AuthGuard)
+  public fetchProductDetails(@Query('product_id') product_id?: string) {
+    this.log.info('fetchProductListByFilter.body');
+    return this.productService.fetchProductDetails(product_id);
+  }
 }

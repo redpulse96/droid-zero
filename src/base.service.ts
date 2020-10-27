@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { Brackets, In, Repository } from 'typeorm';
+import { Brackets, FindManyOptions, In, Repository } from 'typeorm';
 
 @Injectable()
 export class BaseService<T> {
@@ -7,6 +7,13 @@ export class BaseService<T> {
 
   public getRepo() {
     return this.repo;
+  }
+
+  public async findByIds(
+    ids: string[] = [],
+    options: FindManyOptions<T> = {},
+  ): Promise<T[]> {
+    return this.repo.findByIds([...ids], options);
   }
 
   public async findOne(

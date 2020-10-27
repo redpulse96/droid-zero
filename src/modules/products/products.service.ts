@@ -32,6 +32,25 @@ export class ProductService extends BaseService<Products> {
     super(productsRepo);
   }
 
+  private calculateTaxValue(
+    taxType: string,
+    taxValue: number,
+    baseValue: number,
+  ): string {
+    switch (taxType) {
+      case Percentage:
+        return (baseValue + baseValue * (taxValue / 100)).toString();
+      case Absolute:
+        return taxValue.toString();
+      case DiscountPercentage:
+        return (baseValue - baseValue * (taxValue / 100)).toString();
+      case Discount:
+        return (baseValue - taxValue).toString();
+      default:
+        return baseValue.toString();
+    }
+  }
+
   public async createProduct(
     product_items: CreateProductsDto,
   ): Promise<InterfaceList.MethodResponse> {
@@ -136,22 +155,31 @@ export class ProductService extends BaseService<Products> {
     }
   }
 
-  private calculateTaxValue(
-    taxType: string,
-    taxValue: number,
-    baseValue: number,
-  ): string {
-    switch (taxType) {
-      case Percentage:
-        return (baseValue + baseValue * (taxValue / 100)).toString();
-      case Absolute:
-        return taxValue.toString();
-      case DiscountPercentage:
-        return (baseValue - baseValue * (taxValue / 100)).toString();
-      case Discount:
-        return (baseValue - taxValue).toString();
-      default:
-        return baseValue.toString();
+  public async fetchProductDetails(
+    id: string,
+  ): Promise<InterfaceList.MethodResponse> {
+    try {
+      const [productsError, products]: any[] = await executePromise(
+        this.findByIds([id]),
+      );
+      if (productsError) {
+        this.log.error('productsError');
+        this.log.error(productsError);
+        return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
+      } else if (!products?.length) {
+        this.log.info('!products?.length');
+        this.log.info(products);
+        return { response_code: ResponseCodes.BAD_REQUEST };
+      }
+      this.log.info('products');
+      this.log.info(products);
+
+      return {
+        response_code: ResponseCodes.SUCCESSFUL_FETCH,
+        data: { ...products[0] },
+      };
+    } catch (error) {
+      return returnCatchFunction(error);
     }
   }
 }
