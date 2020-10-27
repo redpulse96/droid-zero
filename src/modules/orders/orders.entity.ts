@@ -33,7 +33,6 @@ export class Orders {
     default: null,
     length: 100,
     nullable: true,
-    unique: true,
   })
   public reference_id: string;
 
