@@ -21,11 +21,12 @@ export class CartsController {
   @Get('/fetch-by-filter')
   // @UseGuards(AuthGuard)
   public fetchCategoryListByFilter(
-    @Query('name') name?: string,
+    @Req() request: Request,
+    @Query('product_id') product_id?: string,
     @Query('id') id?: string,
-    @Query('code') code?: string,
   ) {
-    const body = { id, name, code };
+    const { user }: any = request;
+    const body = { id, product_id, user_id: user.id };
     this.log.info('fetchUserByFilter.body');
     this.log.info(body);
     return this.cartsService.fetchCartListByFilter(body);
