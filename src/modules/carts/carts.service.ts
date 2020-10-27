@@ -83,7 +83,7 @@ export class CartsService extends BaseService<Carts> {
       this.log.info(carts);
       return {
         response_code: ResponseCodes.SUCCESSFUL_FETCH,
-        data: { ...carts },
+        data: { carts },
       };
     } catch (error) {
       return returnCatchFunction(error);
