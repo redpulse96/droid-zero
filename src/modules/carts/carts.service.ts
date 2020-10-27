@@ -10,7 +10,7 @@ import { Carts } from './carts.entity';
 import {
   CreateCartDto,
   FetchCartDto,
-  UpdateCartDto,
+  UpdateCartDto
 } from './dto/carts-input.dto';
 const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
 
@@ -18,7 +18,7 @@ const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
 export class CartsService extends BaseService<Carts> {
   private readonly log = new BackendLogger(CartsService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Carts)
     private readonly cartsRepo: Repository<Carts>,
     private readonly dotenvService: DotenvService,
@@ -28,12 +28,12 @@ export class CartsService extends BaseService<Carts> {
 
   public async createCart(
     cart_input: CreateCartDto,
-    user_details: any,
+    user_id: any,
   ): Promise<InterfaceList.MethodResponse> {
     try {
       const createObj: any = {
         product: cart_input.product_id,
-        user: user_details.id,
+        user: user_id,
         quantity: cart_input.quantity,
         status: Status.Active,
       };
