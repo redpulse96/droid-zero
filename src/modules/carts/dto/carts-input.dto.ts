@@ -1,5 +1,6 @@
 export interface CreateCartDto {
   product_id: string;
+  quantity: number;
 }
 
 export interface FetchCartDto {

@@ -2,24 +2,22 @@ import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { BackendLogger } from '../logger/BackendLogger';
 import { CartsService } from './carts.service';
-import { CreateCartDto } from './dto/carts-input.dto';
 
 @Controller('carts')
 export class CartsController {
   private readonly log = new BackendLogger(CartsController.name);
 
-  constructor(private readonly cartsService: CartsService) {}
+  constructor (private readonly cartsService: CartsService) { }
 
   @Post('/register')
   // @UseGuards(AuthGuard)
   public registerCategory(
-    @Body('cart_items') cart_items: CreateCartDto,
     @Req() request: Request,
   ) {
     const { body, user }: any = request;
     this.log.info('registerCategory.cart_items');
-    this.log.info(cart_items);
-    return this.cartsService.createCart(body.cart_items, user.id);
+    this.log.info(user);
+    return this.cartsService.createCart(body, user.id);
   }
 
   @Get('/fetch-by-filter')
