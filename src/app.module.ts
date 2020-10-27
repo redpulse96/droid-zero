@@ -6,6 +6,7 @@ import { join } from 'path';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { SessionMiddleware } from './middleware/session.middleware';
 import { AuthModule } from './modules/auth/auth.module';
+import { CartsModule } from './modules/carts/carts.module';
 import { CategoryModule } from './modules/category/category.module';
 import { DatabaseModule } from './modules/database/database.module';
 import { DotenvModule } from './modules/dotenv/dotenv.module';
@@ -61,6 +62,7 @@ import { UtilModule } from './modules/util/util.module';
     forwardRef(() => CategoryModule),
     forwardRef(() => ProductsModule),
     forwardRef(() => SubCategoryModule),
+    forwardRef(() => CartsModule),
     DatabaseModule,
     SchedulerModule,
     OrdersModule,
