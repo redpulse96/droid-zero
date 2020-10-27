@@ -32,9 +32,9 @@ export class CartsService extends BaseService<Carts> {
   ): Promise<InterfaceList.MethodResponse> {
     try {
       const createObj: any = {
-        product_id: cart_input.product_id,
+        productId: cart_input.product_id,
+        userId: user_details.user_id,
         quantity: cart_input.quantity,
-        user_id: user_details.user_id,
         status: Status.Active,
       };
 
