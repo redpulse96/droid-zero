@@ -3,7 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -21,14 +21,14 @@ export class Carts {
   @PrimaryGeneratedColumn('uuid')
   public id?: string;
 
-  @OneToOne(
+  @ManyToOne(
     (type) => Users,
     (user) => user.id,
   )
   @JoinColumn()
   public user: Users;
 
-  @OneToOne(
+  @ManyToOne(
     (type) => Products,
     (product) => product.id,
   )
