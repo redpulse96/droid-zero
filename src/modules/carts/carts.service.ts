@@ -44,7 +44,7 @@ export class CartsService extends BaseService<Carts> {
       if (cartsError) {
         this.log.error('cartsError', cartsError);
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
-      } else if (!carts?.length) {
+      } else if (!carts) {
         this.log.error('!carts?.length');
         return { response_code: ResponseCodes.EMPTY_RESPONSE };
       }
@@ -52,7 +52,7 @@ export class CartsService extends BaseService<Carts> {
       this.log.info(carts);
       return {
         response_code: ResponseCodes.SUCCESS,
-        data: { carts },
+        data: { ...carts },
       };
     } catch (error) {
       return returnCatchFunction(error);
