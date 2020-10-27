@@ -39,7 +39,7 @@ export class CartsService extends BaseService<Carts> {
       };
 
       const [cartsError, carts]: any[] = await executePromise(
-        this.createAll(createObj),
+        this.create(createObj),
       );
       if (cartsError) {
         this.log.error('cartsError', cartsError);
