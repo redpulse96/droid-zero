@@ -12,7 +12,7 @@ import { Orders } from './orders.entity';
 export class OrdersService extends BaseService<Orders> {
   private readonly log = new BackendLogger(OrdersService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Orders)
     private readonly categoryRepo: Repository<Orders>,
     private readonly dotenvService: DotenvService,
@@ -20,12 +20,15 @@ export class OrdersService extends BaseService<Orders> {
     super(categoryRepo);
   }
 
-  async createOrder(order_details: CreateOrdersDto): Promise<InterfaceList.MethodResponse> {
+  async createOrder(
+    order_details: CreateOrdersDto,
+  ): Promise<InterfaceList.MethodResponse> {
     return { response_code: ResponseCodes.SUCCESS };
   }
 
-  async fetchOrderListByFilter(filter: FetchOrdersDto): Promise<InterfaceList.MethodResponse> {
+  async fetchOrderListByFilter(
+    filter: FetchOrdersDto,
+  ): Promise<InterfaceList.MethodResponse> {
     return { response_code: ResponseCodes.SUCCESS };
   }
-
 }

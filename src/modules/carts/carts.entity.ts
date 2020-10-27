@@ -7,7 +7,7 @@ import {
   OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { Products } from '../products/products.entity';
 import { Users } from '../user/user.entity';
@@ -31,7 +31,7 @@ export class Carts {
 
   @OneToMany(
     (type) => Products,
-    (product) => product.id
+    (product) => product.id,
   )
   @JoinColumn()
   public product_id: Products;

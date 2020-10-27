@@ -7,14 +7,18 @@ import { In, Repository } from 'typeorm';
 import { DotenvService } from '../dotenv/dotenv.service';
 import { BackendLogger } from '../logger/BackendLogger';
 import { Carts } from './carts.entity';
-import { CreateCartDto, FetchCartDto, UpdateCartDto } from './dto/carts-input.dto';
+import {
+  CreateCartDto,
+  FetchCartDto,
+  UpdateCartDto,
+} from './dto/carts-input.dto';
 const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
 
 @Injectable()
 export class CartsService extends BaseService<Carts> {
   private readonly log = new BackendLogger(CartsService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Carts)
     private readonly cartsRepo: Repository<Carts>,
     private readonly dotenvService: DotenvService,
@@ -24,7 +28,7 @@ export class CartsService extends BaseService<Carts> {
 
   public async createCart(
     cart_input: CreateCartDto,
-    user_details: any
+    user_details: any,
   ): Promise<InterfaceList.MethodResponse> {
     try {
       const createObj: any = {
@@ -59,8 +63,7 @@ export class CartsService extends BaseService<Carts> {
   ): Promise<InterfaceList.MethodResponse> {
     try {
       const filter: any = { status: Status.Active };
-      cart_filter?.id?.length &&
-        (filter.id = In([].concat(cart_filter.id)));
+      cart_filter?.id?.length && (filter.id = In([].concat(cart_filter.id)));
       cart_filter?.product_id && (filter.product_id = cart_filter.product_id);
       cart_filter?.user_id && (filter.user_id = cart_filter.user_id);
       this.log.info('fetchCartListByFilter.filter');

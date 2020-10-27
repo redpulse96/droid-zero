@@ -13,7 +13,7 @@ import {
   MomentFormat,
   ResponseCodes,
   Status,
-  TOKEN_EXPIRES_IN
+  TOKEN_EXPIRES_IN,
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { In, Repository } from 'typeorm';
@@ -21,7 +21,7 @@ import {
   CompleteRegistration,
   FetchUserByFilter,
   RegisterUserDto,
-  ValidateOtp
+  ValidateOtp,
 } from './dtos/user-input.dto';
 import { Users } from './user.entity';
 const {
@@ -30,7 +30,7 @@ const {
   returnCatchFunction,
   PasswordHasher,
   MomentFunctions,
-  generateRandomStr
+  generateRandomStr,
 } = Utils;
 const { comparePassword, hashPassword } = PasswordHasher;
 const {
@@ -44,7 +44,7 @@ const { Hours, Timestamp } = MomentFormat;
 export class UserService extends BaseService<Users> {
   private readonly log = new BackendLogger(UserService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Users)
     private readonly userRepo: Repository<Users>,
     private readonly dotenvService: DotenvService,
@@ -77,7 +77,9 @@ export class UserService extends BaseService<Users> {
         };
       }
 
-      const otp: string = ['development', 'test'].includes(this.dotenvService.get('NODE_ENV'))
+      const otp: string = ['development', 'test'].includes(
+        this.dotenvService.get('NODE_ENV'),
+      )
         ? '123456'
         : generateRandomStr(6);
       const createUser: any = {
@@ -224,7 +226,7 @@ export class UserService extends BaseService<Users> {
     try {
       const mobile_number: string = req.mobile_number;
       const [userError, user]: any[] = await executePromise(
-        this.findOne({ mobile_number })
+        this.findOne({ mobile_number }),
       );
       if (userError) {
         this.log.error('completeRegistration.userError');

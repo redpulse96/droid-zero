@@ -7,7 +7,7 @@ import {
   OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { SubCategory } from '../sub-category/sub-category.entity';
 import { Users } from '../user/user.entity';

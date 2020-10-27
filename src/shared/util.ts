@@ -99,7 +99,9 @@ export namespace Utils {
       ...data,
       Utils.MomentFunctions.fetchCurrentTimestamp(),
     );
-    return md5(encryption_str.join('')).toString().toUpperCase();
+    return md5(encryption_str.join(''))
+      .toString()
+      .toUpperCase();
   }
 
   export function uploadImage(file: any, file_path: string) {

@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn, OneToOne, PrimaryColumn,
+  JoinColumn,
+  OneToOne,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { Users } from '../user/user.entity';
 enum Status {

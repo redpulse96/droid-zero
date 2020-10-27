@@ -8,13 +8,11 @@ import { OrdersService } from './orders.service';
 export class OrdersController {
   private readonly log = new BackendLogger(OrdersController.name);
 
-  constructor (private readonly ordersService: OrdersService) { }
+  constructor(private readonly ordersService: OrdersService) {}
 
   @Post('/register')
   // @UseGuards(AuthGuard)
-  public registerOrder(
-    @Body('order_items') order_items: CreateOrdersDto,
-  ) {
+  public registerOrder(@Body('order_items') order_items: CreateOrdersDto) {
     this.log.info('registerOrders.order_items');
     this.log.info(order_items);
     return this.ordersService.createOrder(order_items);

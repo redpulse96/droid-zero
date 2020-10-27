@@ -7,13 +7,13 @@ import { CreateCartDto } from './dto/carts-input.dto';
 export class CartsController {
   private readonly log = new BackendLogger(CartsController.name);
 
-  constructor (private readonly cartsService: CartsService) { }
+  constructor(private readonly cartsService: CartsService) {}
 
   @Post('/register')
   // @UseGuards(AuthGuard)
   public registerCategory(
     @Body('cart_items') cart_items: CreateCartDto,
-    @Req() request: Request
+    @Req() request: Request,
   ) {
     const { body, user }: any = request;
     this.log.info('registerCategory.cart_items');
