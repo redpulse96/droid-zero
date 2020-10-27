@@ -12,6 +12,7 @@ import { DotenvModule } from './modules/dotenv/dotenv.module';
 import { DotenvService } from './modules/dotenv/dotenv.service';
 import { EmailModule } from './modules/email/email.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
 import { SchedulerModule } from './modules/scheduler/scheduler.module';
 import { SubCategoryModule } from './modules/sub-category/sub-category.module';
@@ -62,6 +63,7 @@ import { UtilModule } from './modules/util/util.module';
     forwardRef(() => SubCategoryModule),
     DatabaseModule,
     SchedulerModule,
+    OrdersModule,
   ],
   providers: [],
   controllers: [],

@@ -94,12 +94,12 @@ export namespace Utils {
     };
   }
 
-  export function generateReferenceID(...data: any[]) {
+  export function generateReferenceID(...data: any[]): string {
     const encryption_str: string[] = [].concat(
       ...data,
       Utils.MomentFunctions.fetchCurrentTimestamp(),
     );
-    return md5(encryption_str.join(''));
+    return md5(encryption_str.join('')).toString().toUpperCase();
   }
 
   export function uploadImage(file: any, file_path: string) {

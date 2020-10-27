@@ -2,89 +2,62 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryColumn,
+  JoinColumn, OneToOne, PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
-import { SubCategory } from '../sub-category/sub-category.entity';
 import { Users } from '../user/user.entity';
 enum Status {
   Active = 'active',
   Inactive = 'inactive',
   Pending = 'pending',
 }
-interface prices {
+interface components {
   name: string;
   description: string;
   type: string;
   is_tax_applicable: boolean;
   base_value: number;
+  tax_value: number;
   final_value: number;
 }
 
-@Entity({ name: 'products' })
-export class Products {
+@Entity({ name: 'orders' })
+export class Orders {
   @PrimaryColumn()
   @PrimaryGeneratedColumn('uuid')
   public id?: string;
 
   @Column({
-    type: 'varchar',
-    nullable: false,
-  })
-  public name: string;
-
-  @Column({
-    type: 'varchar',
+    type: 'text',
     default: null,
-    nullable: true,
+    unique: true,
   })
-  public code: string;
+  public reference_id: string;
 
   @Column({
-    type: 'varchar',
-    nullable: false,
-  })
-  public description: string;
-
-  @Column({
-    type: 'varchar',
+    type: 'text',
     default: null,
-    nullable: true,
   })
-  public group: string;
-
-  @Column({
-    type: 'varchar',
-    default: null,
-    nullable: true,
-  })
-  public image_path: string;
-
-  @ManyToOne(
-    (type) => SubCategory,
-    (sub_category) => sub_category.id,
-  )
-  public sub_category: SubCategory;
-
-  @Column()
-  public total_amount: number;
-
-  @Column()
-  public available_quantity: number;
+  public remarks: string;
 
   @Column({
     type: 'simple-json',
     nullable: true,
   })
-  public prices: prices[];
+  public components: components[];
+
+  @Column({
+    type: 'double precision',
+    default: null,
+  })
+  public total_amount: number;
 
   @OneToOne(
     (type) => Users,
-    (user) => user.id,
+    (user) => {
+      return user.id;
+    },
   )
   @JoinColumn()
   public created_by: Users;

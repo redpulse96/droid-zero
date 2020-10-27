@@ -13,7 +13,7 @@ import {
   MomentFormat,
   ResponseCodes,
   Status,
-  TOKEN_EXPIRES_IN,
+  TOKEN_EXPIRES_IN
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { In, Repository } from 'typeorm';
@@ -21,7 +21,7 @@ import {
   CompleteRegistration,
   FetchUserByFilter,
   RegisterUserDto,
-  ValidateOtp,
+  ValidateOtp
 } from './dtos/user-input.dto';
 import { Users } from './user.entity';
 const {
@@ -30,6 +30,7 @@ const {
   returnCatchFunction,
   PasswordHasher,
   MomentFunctions,
+  generateRandomStr
 } = Utils;
 const { comparePassword, hashPassword } = PasswordHasher;
 const {
@@ -43,7 +44,7 @@ const { Hours, Timestamp } = MomentFormat;
 export class UserService extends BaseService<Users> {
   private readonly log = new BackendLogger(UserService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Users)
     private readonly userRepo: Repository<Users>,
     private readonly dotenvService: DotenvService,
@@ -70,39 +71,38 @@ export class UserService extends BaseService<Users> {
       const uniqueMobileNumber = await this.findOne(filter);
       if (uniqueMobileNumber) {
         this.log.info('uniqueMobileNumber');
-        this.log.info(uniqueMobileNumber);
         return {
           response_code: ResponseCodes.EXISTING_USER,
           data: {},
         };
       }
 
-      const otp: string = '123456'; // authenticator.generate(
-      //   this.dotenvService.get('OTP_SECRET'),
-      // );
+      const otp: string = ['development', 'test'].includes(this.dotenvService.get('NODE_ENV'))
+        ? '123456'
+        : generateRandomStr(6);
       const createUser: any = {
         name: data.name,
         email: data.email,
         mobile_number: data.mobile_number,
-        password: data?.password
-          ? await hashPassword(data.password)
-          : await hashPassword(otp),
         api_key: randToken.generate(32),
         primary_address: data.primary_address,
         is_admin: data.is_admin,
         is_portal_user: data.is_portal_user,
         is_locked: false,
+        status: Status.Pending,
         secondary_address: data.secondary_address
           ? data.secondary_address
           : undefined,
-        status: Status.Pending,
+        password: data?.password
+          ? await hashPassword(data.password)
+          : await hashPassword(otp),
       };
       const [createUserError, userDetails]: any[] = await executePromise(
         this.create(createUser),
       );
       if (createUserError) {
-        this.log.info('registerUser.createUserError');
-        this.log.info(createUserError);
+        this.log.error('registerUser.createUserError');
+        this.log.error(createUserError);
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
       }
       this.log.info('registerUser.userDetails');
@@ -153,9 +153,7 @@ export class UserService extends BaseService<Users> {
         mobile_number: data.mobile_number,
       };
       const [userError, user]: any[] = await executePromise(
-        this.findOne({
-          mobile_number: data.mobile_number ? data.mobile_number : undefined,
-        }),
+        this.findOne(filter),
       );
       if (userError) {
         this.log.error('fetchUserFromMobileNumber.userError');
@@ -224,10 +222,9 @@ export class UserService extends BaseService<Users> {
       return { response_code: ResponseCodes.BAD_REQUEST };
     }
     try {
+      const mobile_number: string = req.mobile_number;
       const [userError, user]: any[] = await executePromise(
-        this.findOne({
-          mobile_number: req.mobile_number,
-        }),
+        this.findOne({ mobile_number })
       );
       if (userError) {
         this.log.error('completeRegistration.userError');
@@ -243,8 +240,8 @@ export class UserService extends BaseService<Users> {
       if (user.status != Status.Pending) {
         return { response_code: ResponseCodes.EXISTING_USER };
       }
-
-      const filter = { id: user.id };
+      const id: string = user.id;
+      const filter = { id };
       const updateObj = { ...req.update_obj, status: Status.Active };
       const [updateError, updateUser]: any[] = await executePromise(
         this.userRepo.update(filter, updateObj),
@@ -301,8 +298,8 @@ export class UserService extends BaseService<Users> {
         this.dotenvService.get('APP_KEY'),
         { expiresIn: TOKEN_EXPIRES_IN },
       );
-
-      const filter = { id: user.id };
+      const id: string = user.id;
+      const filter = { id };
       const updateObj = { login_attempts: user.login_attempts + 1 };
       const [updateUserError, updateUser]: any[] = await executePromise(
         this.update(filter, updateObj),
@@ -315,7 +312,7 @@ export class UserService extends BaseService<Users> {
       this.log.info(updateUser);
 
       const userServiceFilter = {
-        user_id: user.id,
+        user_id: id,
         status: Status.Active,
       };
       const [userAccessError, userAccess]: any[] = await executePromise(
@@ -327,7 +324,6 @@ export class UserService extends BaseService<Users> {
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
       } else if (!userAccess?.length) {
         this.log.error('!userAccess?.length');
-        // return { response_code: ResponseCodes.EMPTY_RESPONSE };
       }
       this.log.info('userAccess');
       this.log.info(userAccess);
