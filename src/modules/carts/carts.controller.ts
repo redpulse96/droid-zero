@@ -16,7 +16,7 @@ export class CartsController {
   ) {
     const { body, user }: any = request;
     this.log.info('registerCategory.cart_items');
-    this.log.info(user);
+    this.log.info(body);
     return this.cartsService.createCart(body, user.id);
   }
 
