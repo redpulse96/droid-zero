@@ -31,8 +31,9 @@ export class Orders {
   @Column({
     type: 'text',
     default: null,
-    unique: true,
     length: 100,
+    nullable: true,
+    unique: true,
   })
   public reference_id: string;
 
@@ -40,6 +41,7 @@ export class Orders {
     type: 'text',
     default: null,
     length: 100,
+    nullable: true,
   })
   public remarks: string;
 

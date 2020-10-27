@@ -3,12 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-
+  OneToMany,
   OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
+import { Products } from '../products/products.entity';
 import { Users } from '../user/user.entity';
 enum Status {
   Active = 'active',
@@ -26,7 +27,14 @@ export class Carts {
     (user) => user.id,
   )
   @JoinColumn()
-  public created_by: Users;
+  public user_id: Users;
+
+  @OneToMany(
+    (type) => Products,
+    (product) => product.id
+  )
+  @JoinColumn()
+  public product_id: Products;
 
   @Column()
   public quantity: number;

@@ -1,7 +1,7 @@
 import {
   Injectable,
   NestMiddleware,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { SessionMiddleware } from 'src/middleware/session.middleware';
@@ -19,10 +19,10 @@ const { AppConfigs, PortalConfigs } = UserConfigs;
 export class AuthMiddleware implements NestMiddleware {
   private readonly logger = new BackendLogger(AuthMiddleware.name);
 
-  constructor(
+  constructor (
     private readonly userService: UserService,
     private readonly dotenvService: DotenvService,
-  ) {}
+  ) { }
 
   public async use(req: RequestWithUser, res: Response, next: NextFunction) {
     // Check API key first

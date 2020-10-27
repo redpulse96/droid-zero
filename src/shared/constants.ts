@@ -76,6 +76,7 @@ export namespace ImagesPath {
   export const SubCategory: string = '';
   export const Brands: string = '';
   export const Products: string = '';
+  export const Cart: string = '';
 }
 export namespace TaxType {
   export const Percentage: string = 'tax_percentage';
