@@ -33,7 +33,7 @@ export class ProductsController {
     return this.productService.fetchProductListByFilter(body);
   }
 
-  @Get('/fetch-by-filter')
+  @Get('/fetch-product-details')
   // @UseGuards(AuthGuard)
   public fetchProductDetails(@Query('product_id') product_id?: string) {
     this.log.info('fetchProductListByFilter.body');
