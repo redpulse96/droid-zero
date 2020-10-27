@@ -32,12 +32,14 @@ export class Orders {
     type: 'text',
     default: null,
     unique: true,
+    length: 100,
   })
   public reference_id: string;
 
   @Column({
     type: 'text',
     default: null,
+    length: 100,
   })
   public remarks: string;
 
