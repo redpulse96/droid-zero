@@ -12,6 +12,7 @@
     "prebuild": "rimraf dist",
     "build": "./scripts/build.sh",
     "build:binary": "./scripts/build-binary",
+    "commitmsg": "commitlint -E GIT_PARAMS",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "dev": "ts-node-dev --ignore-watch node_modules -r tsconfig-paths/register ./src/main.ts",
     "dev:lint": "nodemon --config ./nodemon-lint.json",
