@@ -8,7 +8,7 @@ import { ProductService } from './products.service';
 export class ProductsController {
   private readonly log = new BackendLogger(ProductsController.name);
 
-  constructor(private readonly productService: ProductService) {}
+  constructor (private readonly productService: ProductService) { }
 
   @Post('/register')
   // @UseGuards(AuthGuard)
@@ -35,7 +35,9 @@ export class ProductsController {
 
   @Get('/fetch-product-details')
   // @UseGuards(AuthGuard)
-  public fetchProductDetails(@Query('product_id') product_id?: string) {
+  public fetchProductDetails(
+    @Query('product_id') product_id?: string
+  ) {
     this.log.info('fetchProductListByFilter.body');
     return this.productService.fetchProductDetails(product_id);
   }
