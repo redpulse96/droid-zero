@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { Products } from '../products/products.entity';
 import { Users } from '../user/user.entity';
