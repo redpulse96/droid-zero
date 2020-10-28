@@ -3,7 +3,6 @@
 echo "Deploying built binary to server"
 # Insert deploy script logic here
 # pm2 delete all
-git pull
 npm run prebuild
 nest build
 pm2 restart all && pm2 logs
