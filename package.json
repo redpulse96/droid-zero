@@ -12,12 +12,10 @@
     "prebuild": "rimraf dist",
     "build": "./scripts/build.sh",
     "build:binary": "./scripts/build-binary",
-    "commitmsg": "commitlint -E GIT_PARAMS",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "dev": "ts-node-dev --ignore-watch node_modules -r tsconfig-paths/register ./src/main.ts",
     "dev:lint": "nodemon --config ./nodemon-lint.json",
     "deploy": "./scripts/deploy.sh",
-    "precommit": "format",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -34,7 +32,7 @@
   "husky": {
    "hooks": {
      "pre-commit": "npm run format",
-     "commit-msg": "echo \"npm run format\""
+     "commit-msg": "echo $HUSKY_GIT_PARAMS"
    }
  },
   "dependencies": {
