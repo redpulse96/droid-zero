@@ -2,22 +2,22 @@ import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 // import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { BackendLogger } from '../logger/BackendLogger';
 import { CategoryService } from './category.service';
-import { CreateCategoryDto } from './dto/category-input.dto';
 
 @Controller('category')
 export class CategoryController {
   private readonly log = new BackendLogger(CategoryController.name);
 
-  constructor(private readonly categoryService: CategoryService) {}
+  constructor (private readonly categoryService: CategoryService) { }
 
   @Post('/register')
   // @UseGuards(AuthGuard)
   public registerCategory(
-    @Body('category_items') category_items: CreateCategoryDto[],
+    @Body('name') name: string,
+    @Body('description') description: string,
+    @Body('code') code: string,
   ) {
     this.log.info('registerCategory.category_items');
-    this.log.info(category_items);
-    return this.categoryService.createCategory(category_items);
+    return this.categoryService.createCategory({ name, description, code });
   }
 
   @Get('/fetch-by-filter')

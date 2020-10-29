@@ -86,8 +86,7 @@ export namespace Utils {
   }
 
   export function returnCatchFunction(error: any) {
-    log.error('catch.return');
-    log.error(error);
+    log.error('catch.return', error);
     return {
       response_code: 'default',
       data: error,
