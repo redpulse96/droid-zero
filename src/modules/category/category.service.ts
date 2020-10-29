@@ -5,7 +5,7 @@ import {
   ImagesPath,
   InterfaceList,
   ResponseCodes,
-  Status,
+  Status
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { In, Repository } from 'typeorm';
@@ -15,7 +15,7 @@ import { Category } from './category.entity';
 import {
   CreateCategoryDto,
   FetchCategoryDto,
-  UpdateCategoryDto,
+  UpdateCategoryDto
 } from './dto/category-input.dto';
 const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
 
@@ -23,7 +23,7 @@ const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
 export class CategoryService extends BaseService<Category> {
   private readonly log = new BackendLogger(CategoryService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Category)
     private readonly categoryRepo: Repository<Category>,
     private readonly dotenvService: DotenvService,
@@ -40,11 +40,10 @@ export class CategoryService extends BaseService<Category> {
         code: category_input.code
           ? category_input.code
           : `${category_input.name
-              .replace(/ /g, '_')
-              .toUpperCase()}_${generateRandomStr(4)}`,
-        image_path: `${this.dotenvService.get('IMAGES_PATH')}${
-          ImagesPath.Category
-        }${category_input.name.replace(/ /g, '_').toUpperCase()}`,
+            .replace(/ /g, '_')
+            .toUpperCase()}_${generateRandomStr(4)}`,
+        image_path: `${this.dotenvService.get('IMAGES_PATH')}${ImagesPath.Category
+          }${category_input.name.replace(/ /g, '_').toUpperCase()}`,
         status: Status.Active,
       };
 
@@ -62,7 +61,7 @@ export class CategoryService extends BaseService<Category> {
       this.log.info(categories);
       return {
         response_code: ResponseCodes.SUCCESS,
-        data: { categories },
+        data: { ...categories },
       };
     } catch (error) {
       return returnCatchFunction(error);
