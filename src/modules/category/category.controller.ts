@@ -7,7 +7,7 @@ import { CategoryService } from './category.service';
 export class CategoryController {
   private readonly log = new BackendLogger(CategoryController.name);
 
-  constructor (private readonly categoryService: CategoryService) { }
+  constructor(private readonly categoryService: CategoryService) {}
 
   @Post('/register')
   // @UseGuards(AuthGuard)

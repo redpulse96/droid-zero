@@ -5,7 +5,7 @@ import {
   InterfaceList,
   ResponseCodes,
   Status,
-  TaxType
+  TaxType,
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { Repository } from 'typeorm';
@@ -14,7 +14,7 @@ import { BackendLogger } from '../logger/BackendLogger';
 import {
   CreatePricingsDto,
   CreateProductsDto,
-  FetchProductDetailsDto
+  FetchProductDetailsDto,
 } from './dto/products-input.dto';
 import { Products } from './products.entity';
 const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
@@ -24,7 +24,7 @@ const { Absolute, Discount, DiscountPercentage, Percentage } = TaxType;
 export class ProductService extends BaseService<Products> {
   private readonly log = new BackendLogger(ProductService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
     private readonly dotenvService: DotenvService,
