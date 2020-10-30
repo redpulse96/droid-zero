@@ -7,7 +7,7 @@ import { CartsService } from './carts.service';
 export class CartsController {
   private readonly log = new BackendLogger(CartsController.name);
 
-  constructor (private readonly cartsService: CartsService) { }
+  constructor(private readonly cartsService: CartsService) {}
 
   @Post('/register')
   // @UseGuards(AuthGuard)
