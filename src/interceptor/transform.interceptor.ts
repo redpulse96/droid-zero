@@ -2,7 +2,7 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
-  NestInterceptor,
+  NestInterceptor
 } from '@nestjs/common';
 import { ServerResponse } from 'http';
 import { Observable } from 'rxjs';
@@ -16,10 +16,6 @@ export class TransformInterceptor<T>
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<InterfaceList.FinalResponse> {
-    console.log(
-      '----------------------------context--------------------------------------',
-    );
-    console.dir(context);
     return next.handle().pipe(
       map((data: InterfaceList.MethodResponse) => {
         const res: ServerResponse = context.getArgs()[1];
