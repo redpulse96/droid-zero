@@ -7,15 +7,14 @@ import { CartsService } from './carts.service';
 export class CartsController {
   private readonly log = new BackendLogger(CartsController.name);
 
-  constructor(private readonly cartsService: CartsService) {}
+  constructor (private readonly cartsService: CartsService) { }
 
   @Post('/register')
   // @UseGuards(AuthGuard)
   public registerCategory(@Req() request: Request) {
     const { body, user }: any = request;
     this.log.info('registerCategory.cart_items');
-    this.log.info(body);
-    return this.cartsService.createCart(body, user.id);
+    return this.cartsService.createCart({ ...body, id: user.id });
   }
 
   @Get('/fetch-by-filter')

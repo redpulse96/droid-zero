@@ -7,14 +7,14 @@ import { CategoryService } from './category.service';
 export class CategoryController {
   private readonly log = new BackendLogger(CategoryController.name);
 
-  constructor(private readonly categoryService: CategoryService) {}
+  constructor (private readonly categoryService: CategoryService) { }
 
   @Post('/register')
   // @UseGuards(AuthGuard)
   public registerCategory(
     @Body('name') name: string,
     @Body('description') description: string,
-    @Body('code') code: string,
+    @Body('code') code?: string,
   ) {
     this.log.info('registerCategory.category_items');
     return this.categoryService.createCategory({ name, description, code });

@@ -10,15 +10,15 @@ import { Carts } from './carts.entity';
 import {
   CreateCartDto,
   FetchCartDto,
-  UpdateCartDto,
+  UpdateCartDto
 } from './dto/carts-input.dto';
-const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
+const { executePromise, returnCatchFunction } = Utils;
 
 @Injectable()
 export class CartsService extends BaseService<Carts> {
   private readonly log = new BackendLogger(CartsService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Carts)
     private readonly cartsRepo: Repository<Carts>,
     private readonly dotenvService: DotenvService,
@@ -26,18 +26,14 @@ export class CartsService extends BaseService<Carts> {
     super(cartsRepo);
   }
 
-  public async createCart(
-    cart_input: CreateCartDto,
-    user_id: any,
-  ): Promise<InterfaceList.MethodResponse> {
+  public async createCart(cart_input: CreateCartDto): Promise<InterfaceList.MethodResponse> {
     try {
       const createObj: any = {
         product: cart_input.product_id,
-        user: user_id,
+        user: cart_input.user_id,
         quantity: cart_input.quantity,
         status: Status.Active,
       };
-
       const [cartsError, carts]: any[] = await executePromise(
         this.create(createObj),
       );
@@ -101,8 +97,7 @@ export class CartsService extends BaseService<Carts> {
         }),
       );
       if (cartError) {
-        this.log.error('cartError');
-        this.log.error(cartError);
+        this.log.error('cartError', cartError);
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
       } else if (!cart?.id) {
         this.log.info('cart.not.exist');
@@ -116,8 +111,7 @@ export class CartsService extends BaseService<Carts> {
         this.update({ id: data.id }, data.update_obj),
       );
       if (updateCartError) {
-        this.log.error('updateCartError');
-        this.log.error(updateCartError);
+        this.log.error('updateCartError', updateCartError);
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
       }
       this.log.info('updateCart');

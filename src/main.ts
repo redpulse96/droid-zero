@@ -42,7 +42,7 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-    preflightContinue: true,
+    preflightContinue: false,
     optionsSuccessStatus: 204,
   });
 
