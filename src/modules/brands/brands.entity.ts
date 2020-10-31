@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { Products } from '../products/products.entity';
 enum Status {
@@ -20,13 +20,19 @@ export class Brands {
   @PrimaryGeneratedColumn('uuid')
   public id?: string;
 
-  @Column()
+  @Column({
+    default: null
+  })
   public name: string;
 
-  @Column()
+  @Column({
+    default: null
+  })
   public code: string;
 
-  @Column()
+  @Column({
+    default: null
+  })
   public description: string;
 
   @Column()
