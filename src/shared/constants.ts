@@ -54,6 +54,10 @@ export namespace InterfaceList {
     response_code: string;
     data?: any;
   }
+  export interface BooleanResponse {
+    success: boolean;
+    data?: any;
+  }
   export interface FinalResponse {
     success?: boolean;
     status_code?: number;

@@ -7,9 +7,9 @@ import {
   OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
-import { SubCategory } from '../sub-category/sub-category.entity';
+import { Brands } from '../brands/brands.entity';
 import { Users } from '../user/user.entity';
 enum Status {
   Active = 'active',
@@ -65,10 +65,10 @@ export class Products {
   public image_path: string;
 
   @ManyToOne(
-    (type) => SubCategory,
-    (sub_category) => sub_category.id,
+    (type) => Brands,
+    (brand) => brand.id,
   )
-  public sub_category: SubCategory;
+  public brand: Brands;
 
   @Column()
   public total_amount: number;

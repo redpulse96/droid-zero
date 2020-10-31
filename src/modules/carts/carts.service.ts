@@ -10,7 +10,7 @@ import { Carts } from './carts.entity';
 import {
   CreateCartDto,
   FetchCartDto,
-  UpdateCartDto,
+  UpdateCartDto
 } from './dto/carts-input.dto';
 const { executePromise, returnCatchFunction } = Utils;
 
@@ -18,7 +18,7 @@ const { executePromise, returnCatchFunction } = Utils;
 export class CartsService extends BaseService<Carts> {
   private readonly log = new BackendLogger(CartsService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Carts)
     private readonly cartsRepo: Repository<Carts>,
     private readonly dotenvService: DotenvService,
@@ -30,6 +30,10 @@ export class CartsService extends BaseService<Carts> {
     cart_input: CreateCartDto,
   ): Promise<InterfaceList.MethodResponse> {
     try {
+      const filter: any = {
+        product: cart_input.product_id,
+        user: cart_input.user_id
+      };
       const createObj: any = {
         product: cart_input.product_id,
         user: cart_input.user_id,
@@ -37,7 +41,7 @@ export class CartsService extends BaseService<Carts> {
         status: Status.Active,
       };
       const [cartsError, carts]: any[] = await executePromise(
-        this.create(createObj),
+        this.updateOrCreate(filter, createObj)
       );
       if (cartsError) {
         this.log.error('cartsError', cartsError);
@@ -47,7 +51,7 @@ export class CartsService extends BaseService<Carts> {
         return { response_code: ResponseCodes.EMPTY_RESPONSE };
       }
       this.log.info('carts');
-      this.log.info(carts);
+      this.log.debug(carts);
       return {
         response_code: ResponseCodes.SUCCESS,
         data: { ...carts },
@@ -118,6 +122,21 @@ export class CartsService extends BaseService<Carts> {
       }
       this.log.info('updateCart');
       this.log.info(updateCart);
+      return { response_code: ResponseCodes.UPDATE_SUCCESSFUL };
+    } catch (error) {
+      return returnCatchFunction(error);
+    }
+  }
+
+  public async deleteCart(id: string): Promise<InterfaceList.MethodResponse> {
+    try {
+      const [cartError, deletedCart]: any[] = await executePromise(this.delete({ id }));
+      if (cartError) {
+        this.log.error('cartError', cartError);
+        return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
+      }
+      this.log.info('deletedCart');
+      this.log.info(deletedCart);
       return { response_code: ResponseCodes.UPDATE_SUCCESSFUL };
     } catch (error) {
       return returnCatchFunction(error);

@@ -7,38 +7,48 @@ import { CartsService } from './carts.service';
 export class CartsController {
   private readonly log = new BackendLogger(CartsController.name);
 
-  constructor(private readonly cartsService: CartsService) {}
+  constructor (private readonly cartsService: CartsService) { }
 
   @Post('/register')
   // @UseGuards(AuthGuard)
-  public registerCategory(@Req() request: Request) {
+  public registerCart(@Req() request: Request) {
     const { body, user }: any = request;
-    this.log.info('registerCategory.cart_items');
+    this.log.info('registerCart.cart_items');
     return this.cartsService.createCart({ ...body, id: user.id });
   }
 
   @Get('/fetch-by-filter')
   // @UseGuards(AuthGuard)
-  public fetchCategoryListByFilter(
+  public fetchCartListByFilter(
     @Req() request: Request,
     @Query('product_id') product_id?: string,
     @Query('id') id?: string,
   ) {
     const { user }: any = request;
     const body = { id, product_id, user_id: user.id };
-    this.log.info('fetchUserByFilter.body');
+    this.log.info('fetchCartListByFilter.body');
     this.log.info(body);
     return this.cartsService.fetchCartListByFilter(body);
   }
 
-  @Post('/update-category')
+  @Post('/delete-cart')
   // @UseGuards(AuthGuard)
-  public updateCategory(
+  public deleteCart(
+    @Body('id') id: string,
+  ) {
+    this.log.info('deleteCart.body');
+    this.log.info(id);
+    return this.cartsService.deleteCart(id);
+  }
+
+  @Post('/update-cart')
+  // @UseGuards(AuthGuard)
+  public updateCart(
     @Body('id') id: string,
     @Body('update_obj') update_obj: any,
   ) {
     const body = { id, update_obj };
-    this.log.info('updateCategory.body');
+    this.log.info('updateCart.body');
     this.log.info(body);
     return this.cartsService.updateCart(body);
   }

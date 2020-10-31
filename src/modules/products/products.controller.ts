@@ -1,14 +1,14 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
+import { Request } from 'express';
 // import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { BackendLogger } from '../logger/BackendLogger';
 import { CreateProductsDto } from './dto/products-input.dto';
 import { ProductService } from './products.service';
-
 @Controller('products')
 export class ProductsController {
   private readonly log = new BackendLogger(ProductsController.name);
 
-  constructor(private readonly productService: ProductService) {}
+  constructor (private readonly productService: ProductService) { }
 
   @Post('/register')
   // @UseGuards(AuthGuard)
@@ -35,8 +35,11 @@ export class ProductsController {
 
   @Get('/fetch-product-details')
   // @UseGuards(AuthGuard)
-  public fetchProductDetails(@Query('product_id') product_id?: string) {
+  public fetchProductDetails(
+    @Req() request: Request
+  ) {
+    const { user, query }: any = request;
     this.log.info('fetchProductListByFilter.body');
-    return this.productService.fetchProductDetails(product_id);
+    return this.productService.fetchProductDetails({ user, product_id: query.product_id });
   }
 }

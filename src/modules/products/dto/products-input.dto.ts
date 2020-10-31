@@ -5,7 +5,7 @@ export interface CreateProductsDto {
   group?: string;
   base_price: number;
   category_id?: string;
-  subcategory_id?: string;
+  brand_id?: string;
   prices?: any[];
 }
 export interface FetchProductDetailsDto {
@@ -13,7 +13,7 @@ export interface FetchProductDetailsDto {
   name?: string;
   code?: string;
   category_id?: string;
-  subcategory_id?: string;
+  brand_id?: string;
 }
 export interface CreatePricingsDto {
   name: string;
