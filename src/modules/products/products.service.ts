@@ -5,7 +5,7 @@ import {
   InterfaceList,
   ResponseCodes,
   Status,
-  TaxType
+  TaxType,
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { Repository } from 'typeorm';
@@ -16,7 +16,7 @@ import { BackendLogger } from '../logger/BackendLogger';
 import {
   CreatePricingsDto,
   CreateProductsDto,
-  FetchProductDetailsDto
+  FetchProductDetailsDto,
 } from './dto/products-input.dto';
 import { Products } from './products.entity';
 const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
@@ -26,7 +26,7 @@ const { Absolute, Discount, DiscountPercentage, Percentage } = TaxType;
 export class ProductService extends BaseService<Products> {
   private readonly log = new BackendLogger(ProductService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
     private readonly cartsService: CartsService,
@@ -128,8 +128,7 @@ export class ProductService extends BaseService<Products> {
       products_filter?.name && (filter.name = products_filter.name);
       products_filter?.category_id &&
         (filter.category = products_filter.category_id);
-      products_filter?.brand_id &&
-        (filter.brand = products_filter.brand_id);
+      products_filter?.brand_id && (filter.brand = products_filter.brand_id);
       products_filter?.code && (filter.code = products_filter.code);
 
       this.log.info('fetchProductListByFilter.filter');
@@ -158,7 +157,9 @@ export class ProductService extends BaseService<Products> {
     }
   }
 
-  public async fetchProductDetails(input: any): Promise<InterfaceList.MethodResponse> {
+  public async fetchProductDetails(
+    input: any,
+  ): Promise<InterfaceList.MethodResponse> {
     try {
       const [productsError, products]: any[] = await executePromise(
         this.findByIds([input.product_id]),
@@ -178,9 +179,11 @@ export class ProductService extends BaseService<Products> {
 
       const cartsFilter: FetchCartDto = {
         product_id: input.product_id,
-        user_id: input.user.id
+        user_id: input.user.id,
       };
-      const [cartError, cart]: any[] = await executePromise(this.cartsService.fetchCartListByFilter(cartsFilter));
+      const [cartError, cart]: any[] = await executePromise(
+        this.cartsService.fetchCartListByFilter(cartsFilter),
+      );
       if (cartError) {
         this.log.error('cartError', cartError);
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
@@ -190,7 +193,9 @@ export class ProductService extends BaseService<Products> {
       } else {
         this.log.info('cart');
         this.log.debug(cart);
-        const addedProduct: any = cart.data.carts.find((val: any) => { return val.product_id == finalProducts.id; });
+        const addedProduct: any = cart.data.carts.find((val: any) => {
+          return val.product_id == finalProducts.id;
+        });
         finalProducts.added_quantity = addedProduct.quantity;
       }
 

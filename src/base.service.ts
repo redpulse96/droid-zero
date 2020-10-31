@@ -3,7 +3,7 @@ import { Brackets, FindManyOptions, In, Repository } from 'typeorm';
 
 @Injectable()
 export class BaseService<T> {
-  constructor (public repo: Repository<T>) { }
+  constructor(public repo: Repository<T>) {}
 
   public getRepo() {
     return this.repo;

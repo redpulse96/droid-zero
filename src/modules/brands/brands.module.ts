@@ -6,11 +6,9 @@ import { BrandsService } from './brands.service';
 
 @Global()
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Brands]),
-  ],
+  imports: [TypeOrmModule.forFeature([Brands])],
   exports: [BrandsService],
   controllers: [BrandsController],
   providers: [BrandsService],
 })
-export class BrandsModule { }
+export class BrandsModule {}

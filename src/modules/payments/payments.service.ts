@@ -14,7 +14,7 @@ const { executePromise, returnCatchFunction } = Utils;
 export class PaymentsService extends BaseService<Payments> {
   private readonly log = new BackendLogger(PaymentsService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Payments)
     private readonly paymentRepo: Repository<Payments>,
     private readonly dotenvService: DotenvService,
@@ -32,9 +32,15 @@ export class PaymentsService extends BaseService<Payments> {
   ): Promise<InterfaceList.BooleanResponse> {
     const { notes, amount, payment_id } = payment_instance_input;
     try {
-      const pay = await this.RazorPayInstance.orders.create({ amount, notes, currency: 'INR' });
+      const pay = await this.RazorPayInstance.orders.create({
+        amount,
+        notes,
+        currency: 'INR',
+      });
       this.log.debug(pay);
-      const razorpay_instance = await this.RazorPayInstance.payments.fetch(payment_id);
+      const razorpay_instance = await this.RazorPayInstance.payments.fetch(
+        payment_id,
+      );
       const payment_instance: Payments = {
         entity: razorpay_instance.entity,
         payment_id: razorpay_instance.payment_id,
@@ -46,11 +52,14 @@ export class PaymentsService extends BaseService<Payments> {
         bank: razorpay_instance.bank,
         method: razorpay_instance.method,
         order_id: razorpay_instance.order_id,
-        status: razorpay_instance.status
+        status: razorpay_instance.status,
       };
       this.log.info('payment_instance');
       this.log.debug(razorpay_instance);
-      const [payment_error, payment]: [any, Promise<Payments>] = await executePromise(this.create(payment_instance));
+      const [payment_error, payment]: [
+        any,
+        Promise<Payments>,
+      ] = await executePromise(this.create(payment_instance));
       if (payment_error) {
         this.log.error('payment_error', payment_error);
         const refund_input: any = { amount, notes };

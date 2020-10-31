@@ -6,7 +6,7 @@ import { PaymentsService } from './payments.service';
 export class PaymentsController {
   private readonly log = new BackendLogger(PaymentsController.name);
 
-  constructor (private readonly paymentsService: PaymentsService) { }
+  constructor(private readonly paymentsService: PaymentsService) {}
 
   @Post('/register')
   // @UseGuards(AuthGuard)
@@ -16,6 +16,10 @@ export class PaymentsController {
     @Body('payment_id') payment_id?: string,
   ) {
     this.log.info('registerCategory.category_items');
-    return this.paymentsService.createPaymentInstance({ amount, notes, payment_id });
+    return this.paymentsService.createPaymentInstance({
+      amount,
+      notes,
+      payment_id,
+    });
   }
 }

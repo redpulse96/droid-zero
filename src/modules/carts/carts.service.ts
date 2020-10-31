@@ -10,7 +10,7 @@ import { Carts } from './carts.entity';
 import {
   CreateCartDto,
   FetchCartDto,
-  UpdateCartDto
+  UpdateCartDto,
 } from './dto/carts-input.dto';
 const { executePromise, returnCatchFunction } = Utils;
 
@@ -18,7 +18,7 @@ const { executePromise, returnCatchFunction } = Utils;
 export class CartsService extends BaseService<Carts> {
   private readonly log = new BackendLogger(CartsService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Carts)
     private readonly cartsRepo: Repository<Carts>,
     private readonly dotenvService: DotenvService,
@@ -32,7 +32,7 @@ export class CartsService extends BaseService<Carts> {
     try {
       const filter: any = {
         product: cart_input.product_id,
-        user: cart_input.user_id
+        user: cart_input.user_id,
       };
       const createObj: any = {
         product: cart_input.product_id,
@@ -41,7 +41,7 @@ export class CartsService extends BaseService<Carts> {
         status: Status.Active,
       };
       const [cartsError, carts]: any[] = await executePromise(
-        this.updateOrCreate(filter, createObj)
+        this.updateOrCreate(filter, createObj),
       );
       if (cartsError) {
         this.log.error('cartsError', cartsError);
@@ -130,7 +130,9 @@ export class CartsService extends BaseService<Carts> {
 
   public async deleteCart(id: string): Promise<InterfaceList.MethodResponse> {
     try {
-      const [cartError, deletedCart]: any[] = await executePromise(this.delete({ id }));
+      const [cartError, deletedCart]: any[] = await executePromise(
+        this.delete({ id }),
+      );
       if (cartError) {
         this.log.error('cartError', cartError);
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };

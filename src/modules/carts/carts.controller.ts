@@ -7,7 +7,7 @@ import { CartsService } from './carts.service';
 export class CartsController {
   private readonly log = new BackendLogger(CartsController.name);
 
-  constructor (private readonly cartsService: CartsService) { }
+  constructor(private readonly cartsService: CartsService) {}
 
   @Post('/register')
   // @UseGuards(AuthGuard)
@@ -33,9 +33,7 @@ export class CartsController {
 
   @Post('/delete-cart')
   // @UseGuards(AuthGuard)
-  public deleteCart(
-    @Body('id') id: string,
-  ) {
+  public deleteCart(@Body('id') id: string) {
     this.log.info('deleteCart.body');
     this.log.info(id);
     return this.cartsService.deleteCart(id);
