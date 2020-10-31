@@ -7,7 +7,7 @@ import {
   OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { Brands } from '../brands/brands.entity';
 import { Category } from '../category/category.entity';
@@ -80,7 +80,9 @@ export class Products {
   @Column()
   public total_amount: number;
 
-  @Column()
+  @Column({
+    default: null
+  })
   public available_quantity: number;
 
   @Column({
