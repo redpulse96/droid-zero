@@ -4,7 +4,7 @@ import {
   Entity,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 enum Status {
   Active = 'active',
@@ -19,22 +19,22 @@ export class Category {
   public id?: string;
 
   @Column({
-    default: null
+    default: null,
   })
   public name: string;
 
   @Column({
-    default: null
+    default: null,
   })
   public code: string;
 
   @Column({
-    default: null
+    default: null,
   })
   public description: string;
 
   @Column({
-    default: null
+    default: null,
   })
   public image_path: string;
 

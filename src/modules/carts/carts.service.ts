@@ -10,7 +10,7 @@ import { Carts } from './carts.entity';
 import {
   CreateCartDto,
   FetchCartDto,
-  UpdateCartDto
+  UpdateCartDto,
 } from './dto/carts-input.dto';
 const { executePromise, returnCatchFunction } = Utils;
 
@@ -18,7 +18,7 @@ const { executePromise, returnCatchFunction } = Utils;
 export class CartsService extends BaseService<Carts> {
   private readonly log = new BackendLogger(CartsService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Carts)
     private readonly cartsRepo: Repository<Carts>,
     private readonly dotenvService: DotenvService,

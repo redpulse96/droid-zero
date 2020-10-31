@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { Products } from '../products/products.entity';
 enum Status {
@@ -21,17 +21,17 @@ export class Brands {
   public id?: string;
 
   @Column({
-    default: null
+    default: null,
   })
   public name: string;
 
   @Column({
-    default: null
+    default: null,
   })
   public code: string;
 
   @Column({
-    default: null
+    default: null,
   })
   public description: string;
 
