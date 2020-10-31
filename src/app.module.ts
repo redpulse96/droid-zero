@@ -38,7 +38,7 @@ import { UtilModule } from './modules/util/util.module';
           password: dotenvService.get('DB_PASSWORD'),
           database: dotenvService.get('DB_NAME'),
           entities: [join(__dirname, '/**/*.entity.{d.js,d.ts,js,ts}')],
-          synchronize: false, //dotenvService.get('NODE_ENV') == 'development',
+          synchronize: dotenvService.get('NODE_ENV') == 'development',
           logging: dotenvService.get('NODE_ENV') == 'development',
           logger: 'file',
         } as any),
