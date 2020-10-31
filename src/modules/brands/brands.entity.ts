@@ -2,10 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Products } from '../products/products.entity';
 enum Status {
   Active = 'active',
   Inactive = 'inactive',
@@ -29,6 +31,12 @@ export class Brands {
 
   @Column()
   public image_path: string;
+
+  @OneToMany(
+    (type) => Products,
+    (product) => product.brand,
+  )
+  public product: Products[];
 
   @Column({
     type: 'enum',

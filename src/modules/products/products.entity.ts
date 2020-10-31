@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Brands } from '../brands/brands.entity';
+import { Category } from '../category/category.entity';
 import { Users } from '../user/user.entity';
 enum Status {
   Active = 'active',
@@ -69,6 +70,12 @@ export class Products {
     (brand) => brand.id,
   )
   public brand: Brands;
+
+  @ManyToOne(
+    (type) => Category,
+    (category) => category.id,
+  )
+  public category: Category;
 
   @Column()
   public total_amount: number;
