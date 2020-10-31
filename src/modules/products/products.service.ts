@@ -5,7 +5,7 @@ import {
   InterfaceList,
   ResponseCodes,
   Status,
-  TaxType,
+  TaxType
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { Repository } from 'typeorm';
@@ -16,7 +16,7 @@ import { BackendLogger } from '../logger/BackendLogger';
 import {
   CreatePricingsDto,
   CreateProductsDto,
-  FetchProductDetailsDto,
+  FetchProductDetailsDto
 } from './dto/products-input.dto';
 import { Products } from './products.entity';
 const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
@@ -26,7 +26,7 @@ const { Absolute, Discount, DiscountPercentage, Percentage } = TaxType;
 export class ProductService extends BaseService<Products> {
   private readonly log = new BackendLogger(ProductService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
     private readonly cartsService: CartsService,
@@ -148,7 +148,7 @@ export class ProductService extends BaseService<Products> {
       this.log.info('products');
       this.log.info(products);
       products.map((val: any) => {
-        val.prices.push({
+        val.prices = [{
           name: 'test',
           description: 'test',
           type: 'test',
@@ -156,7 +156,7 @@ export class ProductService extends BaseService<Products> {
           base_value: 100,
           status: Status.Active,
           final_value: 110,
-        });
+        }];
       });
 
       return {
@@ -208,16 +208,16 @@ export class ProductService extends BaseService<Products> {
           return val.product.id == finalProducts.id;
         });
         finalProducts.added_quantity = addedProduct.quantity;
-        finalProducts.prices = {
-          name: 'test',
-          description: 'test',
-          type: 'test',
-          is_tax_applicable: true,
-          base_value: 100,
-          status: Status.Active,
-          final_value: 110,
-        };
       }
+      finalProducts.prices = {
+        name: 'test',
+        description: 'test',
+        type: 'test',
+        is_tax_applicable: true,
+        base_value: 100,
+        status: Status.Active,
+        final_value: 110,
+      };
 
       return {
         response_code: ResponseCodes.SUCCESSFUL_FETCH,
