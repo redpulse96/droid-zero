@@ -5,7 +5,7 @@ import {
   InterfaceList,
   ResponseCodes,
   Status,
-  TaxType,
+  TaxType
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { Repository } from 'typeorm';
@@ -16,7 +16,7 @@ import { BackendLogger } from '../logger/BackendLogger';
 import {
   CreatePricingsDto,
   CreateProductsDto,
-  FetchProductDetailsDto,
+  FetchProductDetailsDto
 } from './dto/products-input.dto';
 import { Products } from './products.entity';
 const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
@@ -26,7 +26,7 @@ const { Absolute, Discount, DiscountPercentage, Percentage } = TaxType;
 export class ProductService extends BaseService<Products> {
   private readonly log = new BackendLogger(ProductService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
     private readonly cartsService: CartsService,
@@ -194,7 +194,7 @@ export class ProductService extends BaseService<Products> {
         this.log.info('cart');
         this.log.debug(cart);
         const addedProduct: any = cart.data.carts.find((val: any) => {
-          return val.product_id == finalProducts.id;
+          return val.product.product_id == finalProducts.id;
         });
         finalProducts.added_quantity = addedProduct.quantity;
       }

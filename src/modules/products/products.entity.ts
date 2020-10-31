@@ -7,7 +7,7 @@ import {
   OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { Brands } from '../brands/brands.entity';
 import { Category } from '../category/category.entity';
@@ -47,16 +47,16 @@ export class Products {
 
   @Column({
     type: 'varchar',
-    nullable: false,
-  })
-  public description: string;
-
-  @Column({
-    type: 'varchar',
     default: null,
     nullable: true,
   })
   public group: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
+  public description: string;
 
   @Column({
     type: 'varchar',
@@ -84,10 +84,18 @@ export class Products {
   public available_quantity: number;
 
   @Column({
-    type: 'simple-json',
+    type: 'varchar',
+    default: null,
     nullable: true,
   })
-  public prices: prices[];
+  public base_price: string;
+
+  @Column({
+    type: 'varchar',
+    default: null,
+    nullable: true,
+  })
+  public tax: string;
 
   @OneToOne(
     (type) => Users,
