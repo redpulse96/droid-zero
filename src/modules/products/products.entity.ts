@@ -7,7 +7,7 @@ import {
   OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { Brands } from '../brands/brands.entity';
 import { Category } from '../category/category.entity';
@@ -80,7 +80,7 @@ export class Products {
 
   @Column({
     default: 0,
-    nullable: false,
+    nullable: true,
   })
   public available_quantity: number;
 
