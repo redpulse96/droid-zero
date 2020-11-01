@@ -6,7 +6,7 @@ import {
   ImagesPath,
   InterfaceList,
   ResponseCodes,
-  Status
+  Status,
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { In, Repository } from 'typeorm';
@@ -16,7 +16,7 @@ import { Brands } from './brands.entity';
 import {
   CreateBrandsDto,
   FetchBrandsDto,
-  UpdateBrandsDto
+  UpdateBrandsDto,
 } from './dto/brands-input.dto';
 const { executePromise, returnCatchFunction, generateComponentCode } = Utils;
 
@@ -24,7 +24,7 @@ const { executePromise, returnCatchFunction, generateComponentCode } = Utils;
 export class BrandsService extends BaseService<Brands> {
   private readonly log = new BackendLogger(BrandsService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Brands)
     private readonly brandsRepo: Repository<Brands>,
     private readonly dotenvService: DotenvService,
@@ -39,8 +39,9 @@ export class BrandsService extends BaseService<Brands> {
       const createObj: any = {
         ...brands_input,
         code: generateComponentCode(COMPONENT_CODES['BRAND']),
-        image_path: `${this.dotenvService.get('IMAGES_PATH')}${ImagesPath.Brands
-          }${brands_input.name.replace(/ /g, '_').toUpperCase()}`,
+        image_path: `${this.dotenvService.get('IMAGES_PATH')}${
+          ImagesPath.Brands
+        }${brands_input.name.replace(/ /g, '_').toUpperCase()}`,
         status: Status.Active,
       };
 

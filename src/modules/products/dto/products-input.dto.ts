@@ -8,7 +8,7 @@ export interface CreateProductsDto {
   brand_id?: string;
   available_quantity?: number;
   tax_type?: string;
-  tax_value?: number; 
+  tax_value?: number;
 }
 export interface FetchProductDetailsDto {
   id?: string;

@@ -4,7 +4,7 @@ import {
   Entity,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 enum Status {
   Active = 'active',

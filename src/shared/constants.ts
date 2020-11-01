@@ -91,5 +91,5 @@ export namespace TaxType {
 export const COMPONENT_CODES = {
   CATEGORY: 'CAT_',
   BRAND: 'BRND_',
-  PRODUCT: 'PROD_'
+  PRODUCT: 'PROD_',
 };

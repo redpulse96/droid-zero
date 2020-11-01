@@ -6,7 +6,7 @@ import {
   InterfaceList,
   ResponseCodes,
   Status,
-  TaxType
+  TaxType,
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { Repository } from 'typeorm';
@@ -16,17 +16,22 @@ import { DotenvService } from '../dotenv/dotenv.service';
 import { BackendLogger } from '../logger/BackendLogger';
 import {
   CreateProductsDto,
-  FetchProductDetailsDto
+  FetchProductDetailsDto,
 } from './dto/products-input.dto';
 import { Products } from './products.entity';
-const { executePromise, returnCatchFunction, generateRandomStr, generateComponentCode } = Utils;
+const {
+  executePromise,
+  returnCatchFunction,
+  generateRandomStr,
+  generateComponentCode,
+} = Utils;
 const { Absolute, Discount, DiscountPercentage, Percentage } = TaxType;
 
 @Injectable()
 export class ProductService extends BaseService<Products> {
   private readonly log = new BackendLogger(ProductService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
     private readonly cartsService: CartsService,
@@ -67,7 +72,7 @@ export class ProductService extends BaseService<Products> {
         available_quantity: product_items?.available_quantity,
         status: Status.Active,
         total_amount: 0,
-        code: generateComponentCode(COMPONENT_CODES['PRODUCT'])
+        code: generateComponentCode(COMPONENT_CODES['PRODUCT']),
       };
       if (product_items.tax_value) {
         createProductsObj.total_amount = parseFloat(
@@ -75,7 +80,8 @@ export class ProductService extends BaseService<Products> {
             product_items.tax_type,
             product_items.tax_value,
             product_items.base_price,
-          ));
+          ),
+        );
       }
       const [createError, product]: any[] = await executePromise(
         this.create(createProductsObj),
