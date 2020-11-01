@@ -6,7 +6,7 @@ import {
   InterfaceList,
   ResponseCodes,
   Status,
-  TaxType,
+  TaxType
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { Repository } from 'typeorm';
@@ -16,7 +16,7 @@ import { DotenvService } from '../dotenv/dotenv.service';
 import { BackendLogger } from '../logger/BackendLogger';
 import {
   CreateProductsDto,
-  FetchProductDetailsDto,
+  FetchProductDetailsDto
 } from './dto/products-input.dto';
 import { Products } from './products.entity';
 const {
@@ -31,7 +31,7 @@ const { Absolute, Discount, DiscountPercentage, Percentage } = TaxType;
 export class ProductService extends BaseService<Products> {
   private readonly log = new BackendLogger(ProductService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
     private readonly cartsService: CartsService,
@@ -41,7 +41,7 @@ export class ProductService extends BaseService<Products> {
   }
 
   private calculateTaxValue(
-    taxType: string,
+    taxType: string | undefined,
     taxValue: number,
     baseValue: number,
   ): string {
@@ -71,22 +71,19 @@ export class ProductService extends BaseService<Products> {
         group: product_items?.group,
         available_quantity: product_items?.available_quantity,
         status: Status.Active,
-        total_amount: 0,
         base_price: product_items.base_price,
         tax_type: product_items.tax_type,
         tax_value: product_items.tax_value,
         is_tax_applicable: product_items.tax_value ? true : false,
         code: generateComponentCode(COMPONENT_CODES['PRODUCT']),
-      };
-      if (createProductsObj.is_tax_applicable) {
-        createProductsObj.total_amount = parseFloat(
+        total_amount: parseFloat(
           this.calculateTaxValue(
             product_items.tax_type,
-            product_items.tax_value,
+            product_items.tax_value || 0,
             product_items.base_price,
           ),
-        );
-      }
+        ),
+      };
       const [createError, product]: any[] = await executePromise(
         this.create(createProductsObj),
       );
