@@ -6,7 +6,7 @@ import {
   InterfaceList,
   ResponseCodes,
   Status,
-  TaxType,
+  TaxType
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { Repository } from 'typeorm';
@@ -16,7 +16,7 @@ import { DotenvService } from '../dotenv/dotenv.service';
 import { BackendLogger } from '../logger/BackendLogger';
 import {
   CreateProductsDto,
-  FetchProductDetailsDto,
+  FetchProductDetailsDto
 } from './dto/products-input.dto';
 import { Products } from './products.entity';
 const {
@@ -31,7 +31,7 @@ const { Absolute, Discount, DiscountPercentage, Percentage } = TaxType;
 export class ProductService extends BaseService<Products> {
   private readonly log = new BackendLogger(ProductService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
     private readonly cartsService: CartsService,
@@ -113,10 +113,10 @@ export class ProductService extends BaseService<Products> {
       const filter: any = { status: Status.Active };
       products_filter?.id && (filter.id = products_filter.id);
       products_filter?.name && (filter.name = products_filter.name);
-      products_filter?.category_id &&
-        (filter.category = products_filter.category_id);
       products_filter?.brand_id && (filter.brand = products_filter.brand_id);
       products_filter?.code && (filter.code = products_filter.code);
+      products_filter?.category_id &&
+        (filter.category = products_filter.category_id);
 
       this.log.info('fetchProductListByFilter.filter');
       this.log.debug(filter);
