@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { Category } from '../category/category.entity';
 enum Status {
@@ -35,6 +35,7 @@ export class SubCategory {
   @Column({
     type: 'varchar',
     default: null,
+    nullable: true,
   })
   public description: string;
 

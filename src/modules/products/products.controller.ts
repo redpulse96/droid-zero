@@ -8,15 +8,31 @@ import { ProductService } from './products.service';
 export class ProductsController {
   private readonly log = new BackendLogger(ProductsController.name);
 
-  constructor(private readonly productService: ProductService) {}
+  constructor (private readonly productService: ProductService) { }
 
   @Post('/register')
   // @UseGuards(AuthGuard)
   public registerProduct(
-    @Body('product_items') product_items: CreateProductsDto,
+    @Body('name') name: string,
+    @Body('category_id') category_id: string,
+    @Body('description') description: string,
+    @Body('base_price') base_price: number,
+    @Body('tax_value') tax_value: number,
+    @Body('tax_type') tax_type: string,
+    @Body('available_quantity') available_quantity: number,
+    @Body('brand_id') brand_id: string,
   ) {
     this.log.info('registerProducts.product_items');
-    this.log.info(product_items);
+    const product_items: CreateProductsDto = {
+      name,
+      category_id,
+      description,
+      base_price,
+      tax_value,
+      tax_type,
+      available_quantity,
+      brand_id,
+    };
     return this.productService.createProduct(product_items);
   }
 

@@ -88,3 +88,8 @@ export namespace TaxType {
   export const DiscountPercentage: string = 'discount_percentage';
   export const Discount: string = 'discount_absolute';
 }
+export const COMPONENT_CODES = {
+  CATEGORY: 'CAT_',
+  BRAND: 'BRND_',
+  PRODUCT: 'PROD_'
+};

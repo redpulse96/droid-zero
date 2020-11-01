@@ -4,7 +4,7 @@ import {
   Entity,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 enum Status {
   Active = 'active',
@@ -30,7 +30,9 @@ export class Payments {
   @Column()
   public amount: string;
 
-  @Column()
+  @Column({
+    default: null,
+  })
   public description: string;
 
   @Column()

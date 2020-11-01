@@ -103,6 +103,10 @@ export namespace Utils {
       .toUpperCase();
   }
 
+  export function generateComponentCode(component_type: string): string {
+    return `${component_type}${Utils.generateRandomStr(4)}`;
+  }
+
   export function uploadImage(file: any, file_path: string) {
     const form = new formidable.IncomingForm();
   }

@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/base.service';
 import {
+  COMPONENT_CODES,
   ImagesPath,
   InterfaceList,
   ResponseCodes,
-  Status,
+  Status
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { In, Repository } from 'typeorm';
@@ -15,15 +16,15 @@ import { Brands } from './brands.entity';
 import {
   CreateBrandsDto,
   FetchBrandsDto,
-  UpdateBrandsDto,
+  UpdateBrandsDto
 } from './dto/brands-input.dto';
-const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
+const { executePromise, returnCatchFunction, generateComponentCode } = Utils;
 
 @Injectable()
 export class BrandsService extends BaseService<Brands> {
   private readonly log = new BackendLogger(BrandsService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Brands)
     private readonly brandsRepo: Repository<Brands>,
     private readonly dotenvService: DotenvService,
@@ -37,14 +38,9 @@ export class BrandsService extends BaseService<Brands> {
     try {
       const createObj: any = {
         ...brands_input,
-        code: brands_input.code
-          ? brands_input.code
-          : `${brands_input.name
-              .replace(/ /g, '_')
-              .toUpperCase()}_${generateRandomStr(4)}`,
-        image_path: `${this.dotenvService.get('IMAGES_PATH')}${
-          ImagesPath.Brands
-        }${brands_input.name.replace(/ /g, '_').toUpperCase()}`,
+        code: generateComponentCode(COMPONENT_CODES['BRAND']),
+        image_path: `${this.dotenvService.get('IMAGES_PATH')}${ImagesPath.Brands
+          }${brands_input.name.replace(/ /g, '_').toUpperCase()}`,
         status: Status.Active,
       };
 

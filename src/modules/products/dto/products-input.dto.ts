@@ -6,7 +6,9 @@ export interface CreateProductsDto {
   base_price: number;
   category_id?: string;
   brand_id?: string;
-  prices?: any[];
+  available_quantity?: number;
+  tax_type?: string;
+  tax_value?: number; 
 }
 export interface FetchProductDetailsDto {
   id?: string;
@@ -14,6 +16,8 @@ export interface FetchProductDetailsDto {
   code?: string;
   category_id?: string;
   brand_id?: string;
+  page?: number;
+  limit?: number;
 }
 export interface CreatePricingsDto {
   name: string;

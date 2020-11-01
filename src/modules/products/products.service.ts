@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/base.service';
 import {
+  COMPONENT_CODES,
   InterfaceList,
   ResponseCodes,
   Status,
-  TaxType,
+  TaxType
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { Repository } from 'typeorm';
@@ -14,19 +15,18 @@ import { FetchCartDto } from '../carts/dto/carts-input.dto';
 import { DotenvService } from '../dotenv/dotenv.service';
 import { BackendLogger } from '../logger/BackendLogger';
 import {
-  CreatePricingsDto,
   CreateProductsDto,
-  FetchProductDetailsDto,
+  FetchProductDetailsDto
 } from './dto/products-input.dto';
 import { Products } from './products.entity';
-const { executePromise, returnCatchFunction, generateRandomStr } = Utils;
+const { executePromise, returnCatchFunction, generateRandomStr, generateComponentCode } = Utils;
 const { Absolute, Discount, DiscountPercentage, Percentage } = TaxType;
 
 @Injectable()
 export class ProductService extends BaseService<Products> {
   private readonly log = new BackendLogger(ProductService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
     private readonly cartsService: CartsService,
@@ -61,54 +61,34 @@ export class ProductService extends BaseService<Products> {
       const createProductsObj: any = {
         name: product_items.name,
         description: product_items.description,
-        category: product_items?.category_id || null,
-        brand: product_items?.brand_id || null,
-        group: product_items?.group || null,
+        category: product_items?.category_id,
+        brand: product_items?.brand_id,
+        group: product_items?.group,
+        available_quantity: product_items?.available_quantity,
         status: Status.Active,
         total_amount: 0,
-        prices: [],
-        code: `${product_items.name
-          .replace(/ /g, '_')
-          .toUpperCase()}_${generateRandomStr(4)}`,
+        code: generateComponentCode(COMPONENT_CODES['PRODUCT'])
       };
-      if (product_items?.prices?.length) {
-        product_items.prices.forEach((item: CreatePricingsDto) => {
-          const calculatedAmount: number = parseFloat(
-            this.calculateTaxValue(
-              item.type,
-              item.tax_value,
-              product_items.base_price,
-            ),
-          );
-          if ([Percentage, Absolute].indexOf(item.type) > -1) {
-            createProductsObj.total_amount += calculatedAmount;
-          } else {
-            createProductsObj.total_amount -= calculatedAmount;
-          }
-          createProductsObj.prices.push({
-            name: item.name,
-            description: item.description,
-            type: item.type,
-            is_tax_applicable: [Percentage, Absolute].indexOf(item.type) > -1,
-            base_value: item.base_value,
-            status: Status.Active,
-            final_value: item?.type ? calculatedAmount : item.base_value,
-          });
-        });
+      if (product_items.tax_value) {
+        createProductsObj.total_amount = parseFloat(
+          this.calculateTaxValue(
+            product_items.tax_type,
+            product_items.tax_value,
+            product_items.base_price,
+          ));
       }
       const [createError, product]: any[] = await executePromise(
         this.create(createProductsObj),
       );
       if (createError) {
-        this.log.error('createError');
-        this.log.error(createError);
+        this.log.error('createError', createError);
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
       } else if (!product) {
         this.log.info('!product');
         return { response_code: ResponseCodes.SERVER_ERROR };
       }
       this.log.info('product');
-      this.log.info(product);
+      this.log.debug(product);
 
       return {
         response_code: ResponseCodes.SUCCESS,
@@ -132,13 +112,12 @@ export class ProductService extends BaseService<Products> {
       products_filter?.code && (filter.code = products_filter.code);
 
       this.log.info('fetchProductListByFilter.filter');
-      this.log.info(filter);
+      this.log.debug(filter);
       const [productsError, products]: any[] = await executePromise(
-        this.findAll(filter),
+        this.findPage(filter, products_filter.page, products_filter.limit),
       );
       if (productsError) {
-        this.log.error('productsError');
-        this.log.error(productsError);
+        this.log.error('productsError', productsError);
         return { response_code: ResponseCodes.SERVICE_UNAVAILABLE };
       } else if (!products?.length) {
         this.log.info('!products?.length');
@@ -146,17 +125,17 @@ export class ProductService extends BaseService<Products> {
         return { response_code: ResponseCodes.BAD_REQUEST };
       }
       this.log.info('products');
-      this.log.info(products);
+      this.log.debug(products);
       products.map((val: any) => {
         val.prices = [
           {
-            name: 'test',
-            description: 'test',
-            type: 'test',
-            is_tax_applicable: true,
-            base_value: 100,
+            name: val.tax_type,
+            description: val.tax_type,
+            type: val.tax_type,
+            is_tax_applicable: val.is_tax_applicable,
+            base_value: val.base_price,
+            final_value: val.total_amount,
             status: Status.Active,
-            final_value: 110,
           },
         ];
       });
@@ -189,6 +168,15 @@ export class ProductService extends BaseService<Products> {
       this.log.debug(products);
       const finalProducts: any = { ...products[0] };
       finalProducts.added_quantity = 0;
+      finalProducts.prices = {
+        name: finalProducts.tax_type,
+        description: finalProducts.tax_type,
+        type: finalProducts.tax_type,
+        is_tax_applicable: finalProducts.is_tax_applicable,
+        base_value: finalProducts.base_price,
+        final_value: finalProducts.total_amount,
+        status: Status.Active,
+      };
 
       const cartsFilter: FetchCartDto = {
         product_id: input.product_id,
@@ -211,15 +199,6 @@ export class ProductService extends BaseService<Products> {
         });
         finalProducts.added_quantity = addedProduct.quantity;
       }
-      finalProducts.prices = {
-        name: 'test',
-        description: 'test',
-        type: 'test',
-        is_tax_applicable: true,
-        base_value: 100,
-        status: Status.Active,
-        final_value: 110,
-      };
 
       return {
         response_code: ResponseCodes.SUCCESSFUL_FETCH,

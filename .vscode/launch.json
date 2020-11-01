@@ -4,7 +4,7 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [{
-      "type": "node",
+      "type": "pwa-node",
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
@@ -14,9 +14,9 @@
     },
     {
       "name": "Debug via ts-node-dev",
-      "type": "node",
+      "type": "pwa-node",
       "request": "launch",
-      "protocol": "inspector",
+      // "protocol": "inspector",
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/ts-node-dev",
       "args": ["-r", "tsconfig-paths/register", "${workspaceRoot}/src/main.ts"],
@@ -24,9 +24,9 @@
     },
     {
       "name": "Debug CLI script",
-      "type": "node",
+      "type": "pwa-node",
       "request": "launch",
-      "protocol": "inspector",
+      // "protocol": "inspector",
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/ts-node-dev",
       "runtimeArgs": ["-r", "tsconfig-paths/register"],
