@@ -21,8 +21,8 @@ import {
 const { executePromise, returnCatchFunction, generateComponentCode } = Utils;
 
 @Injectable()
-export class BrandsService extends BaseService<Brands> {
-  private readonly log = new BackendLogger(BrandsService.name);
+export class BrandService extends BaseService<Brands> {
+  private readonly log = new BackendLogger(BrandService.name);
 
   constructor(
     @InjectRepository(Brands)

@@ -6,7 +6,7 @@ import { Users } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
 import { CartsController } from './carts.controller';
 import { Carts } from './carts.entity';
-import { CartsService } from './carts.service';
+import { CartService } from './carts.service';
 
 @Global()
 @Module({
@@ -15,8 +15,8 @@ import { CartsService } from './carts.service';
     ProductsModule,
     UserModule,
   ],
-  providers: [CartsService],
+  providers: [CartService],
   controllers: [CartsController],
-  exports: [CartsService],
+  exports: [CartService],
 })
 export class CartsModule {}

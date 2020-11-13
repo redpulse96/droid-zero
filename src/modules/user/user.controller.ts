@@ -45,9 +45,9 @@ export class UserController {
   public validateOtp(
     @Body('otp') otp: string,
     @Body('mobile_number') mobile_number: string,
-    @Body('is_portal_user') is_portal_user: boolean,
+    @Body('user_type') user_type: string,
   ) {
-    const body = { otp, mobile_number, is_portal_user };
+    const body = { otp, mobile_number, user_type };
     this.log.info('validateOtp.body');
     this.log.info(body);
     return this.userService.validateOtp(body);

@@ -10,7 +10,7 @@ export interface RegisterUserDto {
   email?: string;
   password?: string;
   is_admin?: boolean;
-  is_portal_user?: boolean;
+  user_type?: string;
   primary_address?: any;
   secondary_address?: any;
   userAccess?: string[];
@@ -23,7 +23,7 @@ export interface FetchUserByFilter {
 export interface ValidateOtp {
   mobile_number: string;
   otp: string;
-  is_portal_user: boolean;
+  user_type: string;
 }
 export interface CompleteRegistration {
   mobile_number: string;

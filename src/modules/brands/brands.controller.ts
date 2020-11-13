@@ -1,12 +1,12 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { BackendLogger } from '../logger/BackendLogger';
-import { BrandsService } from './brands.service';
+import { BrandService } from './brands.service';
 
 @Controller('brands')
 export class BrandsController {
   private readonly log = new BackendLogger(BrandsController.name);
 
-  constructor(private readonly brandsService: BrandsService) {}
+  constructor(private readonly brandService: BrandService) {}
 
   @Post('/register')
   // @UseGuards(AuthGuard)
@@ -16,7 +16,7 @@ export class BrandsController {
     @Body('code') code?: string,
   ) {
     this.log.info('registerBrands.brands_items');
-    return this.brandsService.createBrands({ name, description, code });
+    return this.brandService.createBrands({ name, description, code });
   }
 
   @Get('/fetch-by-filter')
@@ -29,7 +29,7 @@ export class BrandsController {
     const body = { id, name, code };
     this.log.info('fetchUserByFilter.body');
     this.log.info(body);
-    return this.brandsService.fetchBrandsListByFilter(body);
+    return this.brandService.fetchBrandsListByFilter(body);
   }
 
   @Post('/update-brand')
@@ -41,6 +41,6 @@ export class BrandsController {
     const body = { id, update_obj };
     this.log.info('updateBrands.body');
     this.log.info(body);
-    return this.brandsService.updateBrands(body);
+    return this.brandService.updateBrands(body);
   }
 }

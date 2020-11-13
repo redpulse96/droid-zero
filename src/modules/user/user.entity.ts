@@ -87,7 +87,7 @@ export class Users {
   public is_admin: boolean;
 
   @Column({ default: false })
-  public is_portal_user: boolean;
+  public user_type: string;
 
   @ManyToOne(
     (type) => Users,

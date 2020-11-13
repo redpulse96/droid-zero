@@ -89,7 +89,7 @@ export class UserService extends BaseService<Users> {
         api_key: randToken.generate(32),
         primary_address: data.primary_address,
         is_admin: data.is_admin,
-        is_portal_user: data.is_portal_user,
+        user_type: data.user_type,
         is_locked: false,
         status: Status.Pending,
         secondary_address: data.secondary_address

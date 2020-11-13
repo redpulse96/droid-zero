@@ -15,8 +15,8 @@ import {
 const { executePromise, returnCatchFunction } = Utils;
 
 @Injectable()
-export class CartsService extends BaseService<Carts> {
-  private readonly log = new BackendLogger(CartsService.name);
+export class CartService extends BaseService<Carts> {
+  private readonly log = new BackendLogger(CartService.name);
 
   constructor(
     @InjectRepository(Carts)
@@ -82,7 +82,7 @@ export class CartsService extends BaseService<Carts> {
         return { response_code: ResponseCodes.BAD_REQUEST };
       }
       this.log.info('carts');
-      this.log.info(carts);
+      this.log.debug(carts);
       return {
         response_code: ResponseCodes.SUCCESSFUL_FETCH,
         data: { carts },

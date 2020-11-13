@@ -10,7 +10,7 @@ import {
 } from 'src/shared/constants';
 import { Utils } from 'src/shared/util';
 import { Repository } from 'typeorm';
-import { CartsService } from '../carts/carts.service';
+import { CartService } from '../carts/carts.service';
 import { FetchCartDto } from '../carts/dto/carts-input.dto';
 import { DotenvService } from '../dotenv/dotenv.service';
 import { BackendLogger } from '../logger/BackendLogger';
@@ -19,12 +19,7 @@ import {
   FetchProductDetailsDto,
 } from './dto/products-input.dto';
 import { Products } from './products.entity';
-const {
-  executePromise,
-  returnCatchFunction,
-  generateRandomStr,
-  generateComponentCode,
-} = Utils;
+const { executePromise, returnCatchFunction, generateComponentCode } = Utils;
 const { Absolute, Discount, DiscountPercentage, Percentage } = TaxType;
 
 @Injectable()
@@ -34,13 +29,13 @@ export class ProductService extends BaseService<Products> {
   constructor(
     @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
-    private readonly cartsService: CartsService,
+    private readonly cartService: CartService,
     private readonly dotenvService: DotenvService,
   ) {
     super(productsRepo);
   }
 
-  private calculateTaxValue(
+  public calculateTaxValue(
     taxType: string | undefined,
     taxValue: number,
     baseValue: number,
@@ -190,7 +185,7 @@ export class ProductService extends BaseService<Products> {
         user_id: input.user.id,
       };
       const [cartError, cart]: any[] = await executePromise(
-        this.cartsService.fetchCartListByFilter(cartsFilter),
+        this.cartService.fetchCartListByFilter(cartsFilter),
       );
       if (cartError) {
         this.log.error('cartError', cartError);

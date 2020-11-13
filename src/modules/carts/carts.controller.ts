@@ -1,13 +1,13 @@
 import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { BackendLogger } from '../logger/BackendLogger';
-import { CartsService } from './carts.service';
+import { CartService } from './carts.service';
 
 @Controller('carts')
 export class CartsController {
   private readonly log = new BackendLogger(CartsController.name);
 
-  constructor(private readonly cartsService: CartsService) {}
+  constructor(private readonly cartsService: CartService) {}
 
   @Post('/register')
   // @UseGuards(AuthGuard)

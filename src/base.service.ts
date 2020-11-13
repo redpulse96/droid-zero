@@ -9,6 +9,13 @@ export class BaseService<T> {
     return this.repo;
   }
 
+  public async findById(
+    id: string = '',
+    options: FindManyOptions<T> = {},
+  ): Promise<T> {
+    return this.repo.findByIds([id], options)[0];
+  }
+
   public async findByIds(
     ids: string[] = [],
     options: FindManyOptions<T> = {},
