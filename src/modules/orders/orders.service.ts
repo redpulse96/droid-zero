@@ -16,7 +16,7 @@ const { executePromise } = Utils;
 export class OrderService extends BaseService<Orders> {
   private readonly log = new BackendLogger(OrderService.name);
 
-  constructor (
+  constructor(
     @InjectRepository(Orders)
     private readonly ordersRepo: Repository<Orders>,
     private readonly dotenvService: DotenvService,
@@ -66,7 +66,7 @@ export class OrderService extends BaseService<Orders> {
       total_quantity: 0,
       tax_components: [],
       discount_components: [],
-      orders: []
+      orders: [],
     };
     cart_details.map((val: Carts) => {
       if (val.product) {
