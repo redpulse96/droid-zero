@@ -50,14 +50,10 @@ export class OrdersController {
 
   @Get('/inventory/check')
   // @UseGuards(AuthGuard)
-  public checkInventory(
-    @Query('name') name?: string,
-    @Query('id') id?: string,
-    @Query('code') code?: string,
-  ) {
-    const body = { id, name, code };
+  public checkInventory(@Query('id') id?: string) {
+    const body = { id };
     this.log.info('fetchOrderListByFilter.body');
-    this.log.info(body);
+    this.log.debug(body);
     return this.ordersService.checkInventory(body);
   }
 }

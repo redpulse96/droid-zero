@@ -72,13 +72,15 @@ export class OrderService extends BaseService<Orders> {
         resp.description = val.product.description;
         resp.quantity = val.quantity;
         resp.total_amount = val.product.total_amount * val.quantity;
-        resp.tax_components.push({
-          is_tax_applicable: true,
-          tax_value: val.product.tax_value,
-          tax_slab: 'GST (CGST + SCGT)',
-          tax_amount: val.product.tax_value * val.quantity,
-          tax_type: val.product.tax_type,
-        });
+        if (val.product.is_tax_applicable) {
+          resp.tax_components.push({
+            is_tax_applicable: true,
+            tax_value: val.product.tax_value,
+            tax_slab: 'GST (CGST + SCGT)',
+            tax_amount: val.product.tax_value * val.quantity,
+            tax_type: val.product.tax_type,
+          });
+        }
       }
     });
     this.log.info('resp');
