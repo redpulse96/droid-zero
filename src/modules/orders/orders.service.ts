@@ -16,7 +16,7 @@ const { executePromise } = Utils;
 export class OrderService extends BaseService<Orders> {
   private readonly log = new BackendLogger(OrderService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Orders)
     private readonly ordersRepo: Repository<Orders>,
     private readonly dotenvService: DotenvService,
@@ -63,15 +63,21 @@ export class OrderService extends BaseService<Orders> {
     this.log.debug(cart_details);
     const resp: any = {
       total_amount: 0,
+      total_quantity: 0,
       tax_components: [],
       discount_components: [],
+      orders: []
     };
     cart_details.map((val: Carts) => {
       if (val.product) {
-        resp.name = val.product.name;
-        resp.description = val.product.description;
-        resp.quantity = val.quantity;
-        resp.total_amount = val.product.total_amount * val.quantity;
+        const obj: any = {
+          name: val.product.name,
+          description: val.product.description,
+          quantity: val.quantity,
+          total_amount: val.product.total_amount * val.quantity,
+        };
+        resp.total_amount += obj.total_amount;
+        resp.total_quantity += obj.quantity;
         if (val.product.is_tax_applicable) {
           resp.tax_components.push({
             is_tax_applicable: true,
@@ -81,6 +87,7 @@ export class OrderService extends BaseService<Orders> {
             tax_type: val.product.tax_type,
           });
         }
+        resp.orders.push(obj);
       }
     });
     this.log.info('resp');
