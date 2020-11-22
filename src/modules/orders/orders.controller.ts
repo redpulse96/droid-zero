@@ -1,30 +1,29 @@
 import {
-  Body,
   Controller,
   Get,
   Post,
   Query,
   Req,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { BackendLogger } from '../logger/BackendLogger';
-import { CreateOrdersDto } from './dto/order-inputs.dto';
 import { OrderService } from './orders.service';
 
 @Controller('orders')
 export class OrdersController {
   private readonly log = new BackendLogger(OrdersController.name);
 
-  constructor(private readonly ordersService: OrderService) {}
+  constructor (private readonly ordersService: OrderService) { }
 
   @Post('/register')
   // @UseGuards(AuthGuard)
-  public registerOrder(@Body('order_items') order_items: CreateOrdersDto) {
+  public registerOrder(@Req() request: Request) {
+    const { body, user }: any = request;
     this.log.info('registerOrders.order_items');
-    this.log.info(order_items);
-    return this.ordersService.createOrder(order_items);
+    this.log.debug(body);
+    return this.ordersService.createOrder({ ...user, ...body });
   }
 
   @Get('/fetch-by-filter')

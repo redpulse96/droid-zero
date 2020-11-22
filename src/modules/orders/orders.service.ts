@@ -5,7 +5,7 @@ import {
   InterfaceList,
   PaymentModes,
   ResponseCodes,
-  Status,
+  Status
 } from 'src/shared/constants';
 import { Repository } from 'typeorm';
 import { Utils } from '../../shared/util';
@@ -23,7 +23,7 @@ const { executePromise, generateReferenceID, returnCatchFunction } = Utils;
 export class OrderService extends BaseService<Orders> {
   private readonly log = new BackendLogger(OrderService.name);
 
-  constructor(
+  constructor (
     @InjectRepository(Orders)
     private readonly ordersRepo: Repository<Orders>,
     private readonly dotenvService: DotenvService,
