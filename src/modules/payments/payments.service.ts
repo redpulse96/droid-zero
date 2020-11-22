@@ -27,6 +27,13 @@ export class PaymentsService extends BaseService<Payments> {
     key_secret: this.dotenvService.get('RAZORPAY_KEY_SECRET'),
   });
 
+  public async requestRefund(payment_instance_input: CreatePaymentDto) {
+    const { notes, amount, payment_id } = payment_instance_input;
+    this.log.info('refund.payment_id');
+    this.log.info(payment_id);
+    return this.RazorPayInstance.payments.refund(payment_id, { amount, notes });
+  }
+
   public async createPaymentInstance(
     payment_instance_input: CreatePaymentDto,
   ): Promise<InterfaceList.BooleanResponse> {
@@ -56,19 +63,11 @@ export class PaymentsService extends BaseService<Payments> {
       };
       this.log.info('payment_instance');
       this.log.debug(razorpay_instance);
-      const [payment_error, payment]: [
-        any,
-        Promise<Payments>,
-      ] = await executePromise(this.create(payment_instance));
-      if (payment_error) {
-        this.log.error('payment_error', payment_error);
-        const refund_input: any = { amount, notes };
-        await this.RazorPayInstance.payments.refund(payment_id, refund_input);
-        return { success: false };
-      } else if (!payment) {
+      const payment: Payments = await this.create(payment_instance);
+      if (!payment) {
         this.log.info('payment.not.created');
-        const refund_input: any = { amount, notes };
-        await this.RazorPayInstance.payments.refund(payment_id, refund_input);
+        const refund_input: CreatePaymentDto = { payment_id, amount, notes };
+        await this.requestRefund(refund_input);
         return { success: false };
       }
       this.log.info('payment');
@@ -82,8 +81,8 @@ export class PaymentsService extends BaseService<Payments> {
       }
     } catch (error) {
       this.log.error('payment.catch.error', error);
-      const refund_input: any = { amount, notes };
-      await this.RazorPayInstance.payments.refund(payment_id, refund_input);
+      const refund_input: CreatePaymentDto = { payment_id, amount, notes };
+      await this.requestRefund(refund_input);
       return { success: false };
     }
   }

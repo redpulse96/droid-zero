@@ -29,6 +29,7 @@ export namespace Status {
   export const Active: string = 'active';
   export const Inactive: string = 'inactive';
   export const Pending: string = 'pending';
+  export const Completed: string = 'completed';
 }
 
 export namespace ResponseCodes {
@@ -93,3 +94,7 @@ export const COMPONENT_CODES = {
   BRAND: 'BRND_',
   PRODUCT: 'PROD_',
 };
+export namespace PaymentModes {
+  export const CASH: string = 'cash';
+  export const ONLINE: string = 'online';
+}

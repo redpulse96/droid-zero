@@ -1,5 +1,5 @@
 export interface CreatePaymentDto {
-  amount: string;
+  amount: number;
   notes?: string;
   payment_id?: string;
 }

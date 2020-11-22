@@ -65,6 +65,7 @@ export class ProductService extends BaseService<Products> {
         brand: product_items?.brand_id,
         group: product_items?.group,
         available_quantity: product_items?.available_quantity,
+        maximum_allowed_quantity: product_items?.maximum_allowed_quantity,
         status: Status.Active,
         base_price: product_items.base_price,
         tax_type: product_items.tax_type,
@@ -208,6 +209,33 @@ export class ProductService extends BaseService<Products> {
       };
     } catch (error) {
       return returnCatchFunction(error);
+    }
+  }
+
+  public async updateQuantity(input: any): Promise<any> {
+    try {
+      if (!input?.length) {
+        return false;
+      }
+      const promises: any = [];
+      input.map((val: any) => {
+        promises.push(
+          this.update(
+            {
+              id: val.product_id,
+            },
+            {
+              available_quantity: val.available_quantity,
+            },
+          ),
+        );
+      });
+
+      const updated_products: any = await Promise.all(promises);
+      this.log.info('updated_products');
+      this.log.debug(updated_products);
+    } catch (error) {
+      return false;
     }
   }
 }

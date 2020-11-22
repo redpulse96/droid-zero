@@ -1,14 +1,19 @@
+
 export interface CreateOrdersDto {
-  name: string;
-  description: string;
+  id: any;
+  remarks: string;
+  mobile_number: string;
   code?: string;
   image_path?: string;
+  mode_of_payment: string;
+  payment_id: string;
+  notes: string;
+  amount: number;
+  quantity_details: any;
 }
 
 export interface FetchOrdersDto {
-  name?: string;
-  id?: string;
-  code?: string;
+  id: any;
 }
 
 export interface UpdateOrdersDto {

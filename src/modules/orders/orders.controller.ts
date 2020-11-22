@@ -43,17 +43,21 @@ export class OrdersController {
   @Get('/checkout')
   // @UseGuards(AuthGuard)
   public checkout(@Req() request: Request) {
-    const { user }: any = request;
+    const { body, user }: any = request;
     this.log.info('fetchOrderListByFilter.body');
-    return this.ordersService.checkout({ id: user.id });
+    return this.ordersService.checkout({
+      ...body,
+      ...user,
+    });
   }
 
   @Get('/inventory/check')
   // @UseGuards(AuthGuard)
-  public checkInventory(@Query('id') id?: string) {
-    const body = { id };
-    this.log.info('fetchOrderListByFilter.body');
-    this.log.debug(body);
-    return this.ordersService.checkInventory(body);
+  public checkInventory(@Req() request: Request) {
+    const { user }: any = request;
+    const { id } = user;
+    this.log.info('checkInventory.user');
+    this.log.debug(user);
+    return this.ordersService.checkInventory({ id });
   }
 }

@@ -35,7 +35,9 @@ export class Carts {
   @JoinColumn()
   public product: Products;
 
-  @Column()
+  @Column({
+    default: 0,
+  })
   public quantity: number;
 
   @Column({

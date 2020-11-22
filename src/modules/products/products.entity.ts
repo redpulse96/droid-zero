@@ -85,6 +85,12 @@ export class Products {
   public available_quantity: number;
 
   @Column({
+    default: 1000,
+    nullable: true,
+  })
+  public maximum_allowed_quantity: number;
+
+  @Column({
     default: null,
     nullable: true,
   })

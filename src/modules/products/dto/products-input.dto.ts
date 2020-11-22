@@ -7,6 +7,7 @@ export interface CreateProductsDto {
   category_id?: string;
   brand_id?: string;
   available_quantity?: number;
+  maximum_allowed_quantity?: number;
   tax_type?: string;
   tax_value?: number;
 }
