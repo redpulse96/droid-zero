@@ -6,7 +6,7 @@ import { PaymentsService } from './payments.service';
 export class PaymentsController {
   private readonly log = new BackendLogger(PaymentsController.name);
 
-  constructor (private readonly paymentsService: PaymentsService) { }
+  constructor(private readonly paymentsService: PaymentsService) {}
 
   @Post('/register')
   // @UseGuards(AuthGuard)

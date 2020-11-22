@@ -9,9 +9,14 @@ import { OrderService } from './orders.service';
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([Orders]), PaymentsModule, ProductsModule, CartsModule],
+  imports: [
+    TypeOrmModule.forFeature([Orders]),
+    PaymentsModule,
+    ProductsModule,
+    CartsModule,
+  ],
   providers: [OrderService],
   controllers: [OrdersController],
   exports: [OrderService],
 })
-export class OrdersModule { }
+export class OrdersModule {}

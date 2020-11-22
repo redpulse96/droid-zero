@@ -11,4 +11,4 @@ import { PaymentsService } from './payments.service';
   controllers: [PaymentsController],
   exports: [PaymentsService],
 })
-export class PaymentsModule { }
+export class PaymentsModule {}
